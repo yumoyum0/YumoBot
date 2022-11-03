@@ -1,0 +1,12 @@
+schemaVersion: 2.2.0
+metadata:
+  name: 'My custom config'
+attributes:
+  space:
+    # regular, large, xlarge
+    instanceType: regular
+    editor:
+      type: Idea
+      version: '2022.2'
+      # release state, e.g. Release or EAP
+      updateChannel: Release

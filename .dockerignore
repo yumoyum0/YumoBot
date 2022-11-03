@@ -1,0 +1,4 @@
+Dockerfile
+.dockerignore/src/main/resources/application-prod.yml
+/src/main/resources/yumobot.properties
+/logs/
