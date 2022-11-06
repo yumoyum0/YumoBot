@@ -21,7 +21,6 @@ import java.util.concurrent.Future;
  * @DateTime: 2022 /9/19 18:09
  */
 @RestController
-@PropertySource("classpath:yumobot.properties")
 @RequestMapping("/图片")
 @Slf4j
 public class ImageController {

@@ -14,7 +14,6 @@ import org.springframework.context.annotation.PropertySource;
  * @DateTime: 2022 /9/20 13:09
  */
 @Configuration
-@PropertySource("classpath:yumobot.properties")
 public class MinioConfig {
 
     @Value("${minio.endpoint}")

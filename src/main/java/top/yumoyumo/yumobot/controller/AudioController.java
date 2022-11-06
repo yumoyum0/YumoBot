@@ -30,7 +30,6 @@ import java.util.*;
  * @DateTime: 2022 /10/2 22:29
  */
 @RestController
-@PropertySource("classpath:yumobot.properties")
 @RequestMapping("/语音")
 @Slf4j
 @Deprecated
