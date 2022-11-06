@@ -21,7 +21,7 @@ ENV TZ="Asia/Shanghai"
 VOLUME /tmp
 # 将 jar 放入容器内
 ADD QQBot.jar .
-ADD config/ /config/
+ADD config/yumobot.properties /config/
 #以下COPY为qqbot项目所需的认证信息和缓存信息，其他项目可删除
 COPY device.json /
 COPY cache/account.secrets /cache/

@@ -24,7 +24,6 @@ import top.yumoyumo.yumobot.listener.MemberListener;
  * @DateTime: 2022 /9/25 13:49
  */
 @Configuration
-@PropertySource("classpath:yumobot.properties")
 @Slf4j
 public class BotConfig {
 
