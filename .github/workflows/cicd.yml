@@ -40,3 +40,4 @@ jobs:
           username: ubuntu
           script_stop: true
           script: docker restart qqbot
+
