@@ -39,5 +39,8 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ubuntu
           script_stop: true
-          script: docker rm -f qqbot / docker rmi yumoyumoyumo/qqbot:1.0 / docker docker build -t yumoyumoyumo/qqbot:1.0 . / docker run -d -p 8088:8088 --name qqbot yumoyumoyumo/qqbot:1.0
+          script: docker rm -f qqbot
+            docker rmi yumoyumoyumo/qqbot:1.0
+            docker docker build -t yumoyumoyumo/qqbot:1.0 .
+            docker run -d -p 8088:8088 --name qqbot yumoyumoyumo/qqbot:1.0
 
