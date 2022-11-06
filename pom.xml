@@ -193,9 +193,10 @@
                 <configuration>
                     <source>19</source>
                     <target>19</target>
-                    <skip>true</skip>
                     <compilerArgs>
+                        <compilerArg>-Xlint:preview</compilerArg>
                         <compilerArg>--enable-preview</compilerArg>
+                        <compilerArg>-Xlint:deprecation</compilerArg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -208,6 +209,14 @@
                     <jvmArguments>--enable-preview</jvmArguments>
                     <mainClass>top.yumoyumo.yumobot.YumoBotApplication</mainClass>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
