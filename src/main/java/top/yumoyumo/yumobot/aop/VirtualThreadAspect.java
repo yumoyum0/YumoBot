@@ -36,10 +36,9 @@ public class VirtualThreadAspect {
      * 使用环绕通知，对切点新建一个虚拟线程来执行
      *
      * @param proceedingJoinPoint 执行连接点
-     * @throws Throwable the throwable
      */
-    @Around("start()")
-    public Future<Object> virtualThread(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    @Around("start()&&@annotation(virtualThread)")
+    public Future<Object> virtualThread(ProceedingJoinPoint proceedingJoinPoint, VirtualThread virtualThread) {
         return executorService.submit(() -> {
             Object result = null;
             try {
