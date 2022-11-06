@@ -57,8 +57,6 @@ public class AudioController {
         paramMap.put("salt", SALT);
         paramMap.put("sign", MD5.create().digestHex(APPID + content + SALT + SECRET));
         content = new ObjectMapper().readValue(HttpUtil.get("https://fanyi-api.baidu.com/api/trans/vip/translate", paramMap), TranslationBean.class).getTransResult().get(0).getDst();
-
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         JSONObject pushBody = new JSONObject();

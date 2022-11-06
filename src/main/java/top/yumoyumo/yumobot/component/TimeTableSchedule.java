@@ -9,21 +9,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The type Weibo hot list task.
- *
  * @Author: yumo
- * @Description: TODO
+ * @Description: 课表提醒定时任务
  * @DateTime: 2022 /9/12 17:49
  */
 @Component
 @Slf4j
 public class TimeTableSchedule {
-    public static final String LOCAL_URL = "http://127.0.0.1:8088";
+    public static final String DISPATCH_URL = "http://127.0.0.1:8088";
 
     @Scheduled(cron = "0 0 1 * * MON-FRI")
     private void TimeTableJob() {
         Map<String, Object> pram = new HashMap<>();
         pram.put("id", "yumo");
-        HttpUtil.get(LOCAL_URL + "/msg/sendDelayMsg", pram);
+        HttpUtil.get(DISPATCH_URL + "/msg/sendDelayMsg", pram);
     }
 }

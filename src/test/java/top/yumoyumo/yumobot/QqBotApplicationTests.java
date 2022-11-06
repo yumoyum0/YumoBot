@@ -1,9 +1,6 @@
 package top.yumoyumo.yumobot;
 
 
-import top.yumoyumo.yumobot.annotation.VirtualThread;
-import top.yumoyumo.yumobot.service.RedisService;
-import top.yumoyumo.yumobot.util.MinioUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -12,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.test.context.junit4.SpringRunner;
+import top.yumoyumo.yumobot.annotation.VirtualThread;
+import top.yumoyumo.yumobot.service.RedisService;
+import top.yumoyumo.yumobot.util.MinioUtil;
 
 import javax.annotation.Resource;
 import java.io.FileInputStream;
