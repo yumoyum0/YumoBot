@@ -28,7 +28,7 @@ jobs:
         env:
           ARGS: '-avz --delete'
           SOURCE: 'target/QQBot.jar'
-          TARGET: '/home/ubuntu/task'
+          TARGET: '/home/ubuntu/qqbot'
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
           REMOTE_USER: ubuntu
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_ACCESS_KEY }}
