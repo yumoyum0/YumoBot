@@ -9,6 +9,7 @@ import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import top.yumoyumo.yumobot.listener.ChatListener;
 import top.yumoyumo.yumobot.listener.CloseListener;
 import top.yumoyumo.yumobot.listener.DispatcherListener;
@@ -23,6 +24,7 @@ import top.yumoyumo.yumobot.listener.MemberListener;
  * @DateTime: 2022 /9/25 13:49
  */
 @Configuration
+@PropertySource("classpath:yumobot.properties")
 @Slf4j
 public class BotConfig {
 

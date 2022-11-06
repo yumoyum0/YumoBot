@@ -39,27 +39,3 @@ minio:
   accessKey: username
   secretKey: password
   bucketName: images
-
-bot:
-  account: 123456
-  pwd: 123456
-  version: 123456
-  mode: 123456
-
-master:
-  id: 123456
-
-timetable:
-  id: 123456
-
-weather:
-  key: 123456
-
-translation:
-  appid: 123456
-  salt: 123456
-  secret: 123456
-
-chat:
-  api_key: 123456
-  api_secret: 123456
