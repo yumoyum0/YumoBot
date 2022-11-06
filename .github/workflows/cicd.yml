@@ -19,7 +19,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '19'
-      - name: Build  with Maven
+      - name: Build with Maven
         run: mvn -B package --file pom.xml
       - name: Rename target
         run: mv target/*.jar target/YumoBot.jar
