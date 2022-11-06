@@ -27,7 +27,6 @@ import static top.yumoyumo.yumobot.service.impl.ProducerServiceImpl.TIMETABLE;
  * @DateTime: 2022/10/31 20:55
  **/
 @Service
-@PropertySource("classpath:yumobot.properties")
 @Slf4j
 public class TimeTableServiceImpl implements TimeTableService {
 

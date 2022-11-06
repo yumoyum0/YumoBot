@@ -21,7 +21,6 @@ import java.util.concurrent.Future;
  * @DateTime: 2022 /9/8 13:22
  */
 @RestController
-@PropertySource("classpath:yumobot.properties")
 @RequestMapping("/城市")
 @Slf4j
 public class CityController {

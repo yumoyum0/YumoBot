@@ -6,7 +6,6 @@ import net.mamoe.mirai.message.data.SimpleServiceMessage;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 
@@ -19,7 +18,6 @@ import java.util.Date;
  * @DateTime: 2022/10/30 20:03
  **/
 @Slf4j
-@PropertySource("classpath:yumobot.properties")
 @Component
 public class DelayQueueConsumer {
     @Resource
