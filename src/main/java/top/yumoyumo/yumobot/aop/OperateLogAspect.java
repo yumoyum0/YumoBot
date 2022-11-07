@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import top.yumoyumo.yumobot.annotation.OperateLog;
+import top.yumoyumo.yumobot.exception.LocalRuntimeException;
 import top.yumoyumo.yumobot.interceptor.RequestInterceptor;
 import top.yumoyumo.yumobot.util.CommonUtil;
 
@@ -50,7 +51,7 @@ public class OperateLogAspect {
                 logg.info(preTrack.toLogFormat(true));
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new LocalRuntimeException(e);
         }
         return result;
     }
@@ -67,7 +68,7 @@ public class OperateLogAspect {
                 logg.info(preTrack.toLogFormat(false));
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new LocalRuntimeException(e);
         }
     }
 }

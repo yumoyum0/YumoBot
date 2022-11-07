@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import top.yumoyumo.yumobot.exception.LocalRuntimeException;
 
 import javax.annotation.Resource;
 import java.util.concurrent.*;
@@ -44,7 +45,7 @@ public class VirtualThreadAspect {
             try {
                 result = proceedingJoinPoint.proceed();
             } catch (Throwable e) {
-                throw new RuntimeException(e);
+                throw new LocalRuntimeException(e);
             }
             if (result instanceof Future) {
                 return ((Future<?>) result).get();
