@@ -1,5 +1,7 @@
 package top.yumoyumo.yumobot.aop;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -39,12 +41,14 @@ public class VirtualThreadAspect {
      * @param proceedingJoinPoint 执行连接点
      */
     @Around("start()&&@annotation(virtualThread)")
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public Future<Object> virtualThread(ProceedingJoinPoint proceedingJoinPoint, VirtualThread virtualThread) {
         return executorService.submit(() -> {
             Object result = null;
             try {
                 result = proceedingJoinPoint.proceed();
             } catch (Throwable e) {
+                e.printStackTrace();
                 throw new LocalRuntimeException(e);
             }
             if (result instanceof Future) {
