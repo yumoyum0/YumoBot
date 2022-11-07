@@ -41,7 +41,7 @@ public class VirtualThreadAspect {
      * @param proceedingJoinPoint 执行连接点
      */
     @Around("start()&&@annotation(virtualThread)")
-    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Order(1)
     public Future<Object> virtualThread(ProceedingJoinPoint proceedingJoinPoint, VirtualThread virtualThread) {
         return executorService.submit(() -> {
             Object result = null;
