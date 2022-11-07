@@ -41,7 +41,7 @@ public class OperateLogAspect {
     }
 
     @Around("operateLog()&&@annotation(log)")
-    @Order(Ordered.LOWEST_PRECEDENCE)
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperateLog log) throws Throwable {
         Map<String, Object> paramMap = CommonUtil.getRequestParamMap(proceedingJoinPoint, EXCLUDE_SET);
         Object result = proceedingJoinPoint.proceed();
