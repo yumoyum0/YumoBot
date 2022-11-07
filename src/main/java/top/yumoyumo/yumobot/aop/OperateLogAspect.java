@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import top.yumoyumo.yumobot.annotation.OperateLog;
 import top.yumoyumo.yumobot.exception.LocalRuntimeException;
@@ -41,14 +40,16 @@ public class OperateLogAspect {
 
     @Around("operateLog()&&@annotation(log)")
     public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperateLog log) throws Throwable {
-        Map<String, Object> paramMap = CommonUtil.getRequestParamMap(proceedingJoinPoint, EXCLUDE_SET);
-        Object result = proceedingJoinPoint.proceed();
+        Object result = null;
         try {
+            Map<String, Object> paramMap = CommonUtil.getRequestParamMap(proceedingJoinPoint, EXCLUDE_SET);
+            result = proceedingJoinPoint.proceed();
+            Object finalResult = result;
             Optional.ofNullable(RequestInterceptor.requestHolder.get()).ifPresent((preTrack) -> {
                 preTrack.setSpendTime(System.currentTimeMillis() - Long.parseLong(preTrack.getSpendTime()) + "ms")
                         .setDescription(log.operDesc())
                         .setParams(paramMap)
-                        .setResult(result);
+                        .setResult(finalResult);
                 logg.info(preTrack.toLogFormat(true));
             });
         } catch (Exception e) {
