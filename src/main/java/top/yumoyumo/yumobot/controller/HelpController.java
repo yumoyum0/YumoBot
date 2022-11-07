@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
 @RequestMapping("/")
 @Slf4j
 public class HelpController {
-    @OperateLog(operDesc = "help")
+    //    @OperateLog(operDesc = "help")
     @VirtualThread
     @RequestMapping(value = {"", "/", "/help"})
     public Future<String> help() {

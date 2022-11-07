@@ -26,7 +26,7 @@ public class WeatherController {
 
     @RequestMapping(value = {"", "/", "/help"})
     @OperateLog(operDesc = "天气查询help")
-    @VirtualThread
+//    @VirtualThread
     public Future<String> help() {
         return new AsyncResult<>(
                 """

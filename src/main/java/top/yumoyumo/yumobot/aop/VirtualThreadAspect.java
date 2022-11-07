@@ -5,6 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.exception.LocalRuntimeException;
@@ -40,6 +41,7 @@ public class VirtualThreadAspect {
      * @param proceedingJoinPoint 执行连接点
      */
     @Around("start()&&@annotation(virtualThread)")
+    @Order
     public Future<Object> virtualThread(ProceedingJoinPoint proceedingJoinPoint, VirtualThread virtualThread) {
         return executorService.submit(() -> {
             Object result = null;
