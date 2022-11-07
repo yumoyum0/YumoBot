@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yumoyumo.yumobot.annotation.OperateLog;
-import top.yumoyumo.yumobot.annotation.VirtualThread;
 
 import java.util.concurrent.Future;
 
