@@ -1,18 +1,17 @@
 package top.yumoyumo.yumobot.aop;
 
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import top.yumoyumo.yumobot.annotation.VirtualThread;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.exception.LocalRuntimeException;
 
 import javax.annotation.Resource;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * The type Virtual thread aspect.
@@ -41,7 +40,6 @@ public class VirtualThreadAspect {
      * @param proceedingJoinPoint 执行连接点
      */
     @Around("start()&&@annotation(virtualThread)")
-    @Order(1)
     public Future<Object> virtualThread(ProceedingJoinPoint proceedingJoinPoint, VirtualThread virtualThread) {
         return executorService.submit(() -> {
             Object result = null;
