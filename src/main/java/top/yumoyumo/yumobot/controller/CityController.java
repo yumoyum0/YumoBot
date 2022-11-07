@@ -1,12 +1,10 @@
 package top.yumoyumo.yumobot.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.yumoyumo.yumobot.annotation.OperateLog;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.service.CityService;
 
@@ -30,8 +28,7 @@ public class CityController {
 
 
     @RequestMapping(value = {"", "/", "/help"})
-    @OperateLog(operDesc = "城市help")
-    @VirtualThread
+    @VirtualThread("城市help")
     public Future<String> help() {
         return new AsyncResult<>(
                 """
@@ -47,8 +44,7 @@ public class CityController {
 
 
     @RequestMapping("/{location}")
-    @OperateLog(operDesc = "城市查询")
-    @VirtualThread
+    @VirtualThread("城市查询")
     public Future<String> location(@PathVariable String location) {
         return new AsyncResult<>(cityService.location(location));
     }

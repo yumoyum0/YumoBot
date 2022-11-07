@@ -6,13 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.yumoyumo.yumobot.annotation.OperateLog;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.service.TimeTableService;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.concurrent.Future;
 
 /**
@@ -28,9 +26,8 @@ public class TimeTableController {
     @Resource
     private TimeTableService timeTableService;
 
-    @OperateLog(operDesc = "课表help")
     @RequestMapping("/help")
-    @VirtualThread
+    @VirtualThread("课表help")
     public Future<String> help() {
         return new AsyncResult<>(
                 """
@@ -43,24 +40,21 @@ public class TimeTableController {
                         """);
     }
 
-    @OperateLog(operDesc = "查询今日课表")
     @GetMapping(value = {"", "/", "/today"})
-    @VirtualThread
+    @VirtualThread("查询今日课表")
     public Future<String> today() {
         return new AsyncResult<>(timeTableService.getTimeTableByDay(LocalDateTime.now()));
     }
 
 
-    @OperateLog(operDesc = "查询未来课表")
     @GetMapping("/plus/{num}")
-    @VirtualThread
+    @VirtualThread("查询未来课表")
     public Future<String> plus(@PathVariable Integer num) {
         return new AsyncResult<>(timeTableService.getTimeTableByDay(LocalDateTime.now().plusDays(num)));
     }
 
-    @OperateLog(operDesc = "查询过去课表")
     @GetMapping("/minus/{num}")
-    @VirtualThread
+    @VirtualThread("查询过去课表")
     public Future<String> minus(@PathVariable Integer num) {
         return new AsyncResult<>(timeTableService.getTimeTableByDay(LocalDateTime.now().minusDays(num)));
     }

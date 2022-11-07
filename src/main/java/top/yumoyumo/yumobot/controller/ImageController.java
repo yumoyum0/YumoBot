@@ -1,12 +1,10 @@
 package top.yumoyumo.yumobot.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.yumoyumo.yumobot.annotation.OperateLog;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.service.ImageService;
 
@@ -29,8 +27,7 @@ public class ImageController {
     private ImageService imageService;
 
     @RequestMapping("/help")
-    @OperateLog(operDesc = "图片help")
-    @VirtualThread
+    @VirtualThread("图片help")
     public Future<String> help() {
         return new AsyncResult<>(
                 """
@@ -45,8 +42,7 @@ public class ImageController {
     }
 
     @RequestMapping(value = {"", "/"})
-    @OperateLog(operDesc = "获取图片")
-    @VirtualThread
+    @VirtualThread("获取图片")
     public Future<String> getImage(@RequestParam(required = false) String tag,
                                    @RequestParam(required = false) String num,
                                    @RequestParam(required = false) String r18) {

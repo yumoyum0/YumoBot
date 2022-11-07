@@ -1,11 +1,10 @@
 package top.yumoyumo.yumobot.controller;
 
-import top.yumoyumo.yumobot.annotation.OperateLog;
-import top.yumoyumo.yumobot.annotation.VirtualThread;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.yumoyumo.yumobot.annotation.VirtualThread;
 
 import java.util.concurrent.Future;
 
@@ -27,9 +26,8 @@ public class VersionController {
      *
      * @return the future
      */
-    @OperateLog(operDesc = "版本help")
     @RequestMapping()
-    @VirtualThread
+    @VirtualThread("版本help")
     public Future<String> log() {
         return new AsyncResult<>(
                 """

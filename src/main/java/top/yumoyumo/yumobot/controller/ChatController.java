@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.yumoyumo.yumobot.annotation.OperateLog;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.pojo.ChatBean;
 import top.yumoyumo.yumobot.service.ChatService;
@@ -25,8 +24,7 @@ public class ChatController {
     private ChatService chatService;
 
     @RequestMapping()
-    @OperateLog(operDesc = "闲聊")
-    @VirtualThread
+    @VirtualThread("闲聊")
     public Future<String> chat(ChatBean chatBean) {
         return new AsyncResult<>(chatService.chat(chatBean));
     }

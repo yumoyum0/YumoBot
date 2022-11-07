@@ -5,7 +5,6 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.yumoyumo.yumobot.annotation.OperateLog;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.service.OneMsgService;
 
@@ -24,9 +23,8 @@ public class OneMsgController {
     @Resource
     private OneMsgService oneMsgService;
 
-    @OperateLog(operDesc = "一言help")
     @RequestMapping("/help")
-    @VirtualThread
+    @VirtualThread("一言help")
     public Future<String> help() {
         return new AsyncResult<>(
                 """
@@ -39,9 +37,8 @@ public class OneMsgController {
         );
     }
 
-    @OperateLog(operDesc = "一言")
     @RequestMapping(value = {"/{c}", "", "/"})
-    @VirtualThread
+    @VirtualThread("一言")
     public Future<String> oneMsg(@PathVariable(required = false) String c) {
         return new AsyncResult<>(oneMsgService.oneMsg(c));
     }

@@ -1,10 +1,8 @@
 package top.yumoyumo.yumobot.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import top.yumoyumo.yumobot.interceptor.RequestInterceptor;
 
 /**
  * The type Web config.
@@ -21,10 +19,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/");
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new RequestInterceptor())
-                .addPathPatterns("/**")
-                .excludePathPatterns("/", "/static/**");
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new RequestInterceptor())
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/", "/static/**");
+//    }
 }

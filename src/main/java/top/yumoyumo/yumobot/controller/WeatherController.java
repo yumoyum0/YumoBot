@@ -5,7 +5,6 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.yumoyumo.yumobot.annotation.OperateLog;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.service.WeatherService;
 
@@ -25,8 +24,7 @@ public class WeatherController {
     private WeatherService weatherService;
 
     @RequestMapping(value = {"", "/", "/help"})
-    @OperateLog(operDesc = "天气查询help")
-//    @VirtualThread
+    @VirtualThread("天气查询help")
     public Future<String> help() {
         return new AsyncResult<>(
                 """
@@ -41,8 +39,7 @@ public class WeatherController {
     }
 
     @RequestMapping("/{location}")
-    @OperateLog(operDesc = "实时天气查询")
-    @VirtualThread
+    @VirtualThread("实时天气查询")
     public Future<String> nowWeather(@PathVariable String location) {
         return new AsyncResult<>(weatherService.nowWeather(location));
     }

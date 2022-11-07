@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.yumoyumo.yumobot.annotation.OperateLog;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
-import top.yumoyumo.yumobot.exception.LocalRuntimeException;
 
 import java.util.concurrent.Future;
 
@@ -20,8 +18,8 @@ import java.util.concurrent.Future;
 @RequestMapping("/")
 @Slf4j
 public class HelpController {
-    //    @OperateLog(operDesc = "help")
-    @VirtualThread
+
+    @VirtualThread("help")
     @RequestMapping(value = {"", "/", "/help"})
     public Future<String> help() {
         return new AsyncResult<>(

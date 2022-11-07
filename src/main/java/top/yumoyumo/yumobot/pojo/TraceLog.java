@@ -20,24 +20,11 @@ public class TraceLog {
      * 操作描述
      */
     private String description;
-    /**
-     * 请求平台
-     */
-    private String env;
-    /**
-     * UA
-     */
-    private String userAgent;
 
     /**
-     * 消耗时间
+     * signature
      */
-    private String spendTime;
-
-    /**
-     * URL
-     */
-    private String url;
+    private String signature;
 
     /**
      * 请求参数
@@ -54,7 +41,7 @@ public class TraceLog {
         String strResult = getResult(200);
         String strParam = String.valueOf(params);
         String format = requestStatus ? commonFormat : errorFormat;
-        return String.format(format, description, env, URLUtil.decode(url), strParam, strResult, spendTime, userAgent);
+        return String.format(format, description, signature, strParam, strResult);
     }
 
     /**
@@ -75,23 +62,17 @@ public class TraceLog {
 
             ===========捕获响应===========
             操作描述：%s
-            请求平台：%s
-            请求地址：%s
+            请求签名：%s
             请求参数：%s
             请求返回：%s
-            请求耗时：%s
-            请求UA：%s
             ===========释放响应===========""";
     private final static String errorFormat = """
 
             ===========捕获异常===========
             操作描述：%s
-            请求平台：%s
-            请求地址：%s
+            请求签名：%s
             请求参数：%s
             请求异常：%s
-            请求耗时：%s
-            请求UA：%s
             ===========释放异常===========""";
 
 }

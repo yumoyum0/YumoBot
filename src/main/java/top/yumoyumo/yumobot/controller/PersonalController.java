@@ -1,17 +1,14 @@
 package top.yumoyumo.yumobot.controller;
 
-import top.yumoyumo.yumobot.annotation.OperateLog;
-import top.yumoyumo.yumobot.annotation.VirtualThread;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.yumoyumo.yumobot.annotation.VirtualThread;
 
 import java.util.concurrent.Future;
 
 /**
- * The type Personal controller.
- *
  * @Author: yumo
  * @Description: TODO
  * @DateTime: 2022 /9/10 0:03
@@ -21,9 +18,8 @@ import java.util.concurrent.Future;
 @Slf4j
 public class PersonalController {
 
-    @OperateLog(operDesc = "人设")
     @RequestMapping()
-    @VirtualThread
+    @VirtualThread("人设")
     public Future<String> log() {
         return new AsyncResult<>(
                 """
