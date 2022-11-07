@@ -53,12 +53,14 @@ public class TimeTableController {
 
     @OperateLog(operDesc = "查询未来课表")
     @GetMapping("/plus/{num}")
+    @VirtualThread
     public Future<String> plus(@PathVariable Integer num) {
         return new AsyncResult<>(timeTableService.getTimeTableByDay(LocalDateTime.now().plusDays(num)));
     }
 
     @OperateLog(operDesc = "查询过去课表")
     @GetMapping("/minus/{num}")
+    @VirtualThread
     public Future<String> minus(@PathVariable Integer num) {
         return new AsyncResult<>(timeTableService.getTimeTableByDay(LocalDateTime.now().minusDays(num)));
     }

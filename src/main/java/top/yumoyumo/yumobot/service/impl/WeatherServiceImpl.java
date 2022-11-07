@@ -25,7 +25,6 @@ public class WeatherServiceImpl implements WeatherService {
     public static final String WEATHER_URL = "https://devapi.qweather.com/v7/weather/now";
 
     @Override
-    @VirtualThread
     public String nowWeather(String location) {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("location", location);

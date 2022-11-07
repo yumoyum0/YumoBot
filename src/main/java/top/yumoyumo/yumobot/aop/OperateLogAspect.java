@@ -38,23 +38,23 @@ public class OperateLogAspect {
     public void operateLog() {
     }
 
-    @Around("operateLog()&&@annotation(log)")
-    public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperateLog log) throws Throwable {
-        Map<String, Object> paramMap = CommonUtil.getRequestParamMap(proceedingJoinPoint, EXCLUDE_SET);
-        Object result = proceedingJoinPoint.proceed();
-        try {
-            Optional.ofNullable(RequestInterceptor.requestHolder.get()).ifPresent((preTrack) -> {
-                preTrack.setSpendTime(System.currentTimeMillis() - Long.parseLong(preTrack.getSpendTime()) + "ms")
-                        .setDescription(log.operDesc())
-                        .setParams(paramMap)
-                        .setResult(result);
-                logg.info(preTrack.toLogFormat(true));
-            });
-        } catch (Exception e) {
-            throw new LocalRuntimeException(e);
-        }
-        return result;
-    }
+//    @Around("operateLog()&&@annotation(log)")
+//    public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperateLog log) throws Throwable {
+//        Map<String, Object> paramMap = CommonUtil.getRequestParamMap(proceedingJoinPoint, EXCLUDE_SET);
+//        Object result = proceedingJoinPoint.proceed();
+//        try {
+//            Optional.ofNullable(RequestInterceptor.requestHolder.get()).ifPresent((preTrack) -> {
+//                preTrack.setSpendTime(System.currentTimeMillis() - Long.parseLong(preTrack.getSpendTime()) + "ms")
+//                        .setDescription(log.operDesc())
+//                        .setParams(paramMap)
+//                        .setResult(result);
+//                logg.info(preTrack.toLogFormat(true));
+//            });
+//        } catch (Exception e) {
+//            throw new LocalRuntimeException(e);
+//        }
+//        return result;
+//    }
 
     @AfterThrowing(pointcut = "operateLog()&&@annotation(log)", throwing = "exception")
     public void throwHandler(JoinPoint joinPoint, OperateLog log, Throwable exception) {
