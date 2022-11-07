@@ -24,11 +24,6 @@ public class HelpController {
     @VirtualThread
     @RequestMapping(value = {"", "/", "/help"})
     public Future<String> help() {
-        try {
-            int i = 1 / 0;
-        } catch (Exception e) {
-            throw new LocalRuntimeException(e);
-        }
         return new AsyncResult<>(
                 """
                         YumoBot
