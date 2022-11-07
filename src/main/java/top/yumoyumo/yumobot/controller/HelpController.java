@@ -6,6 +6,8 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yumoyumo.yumobot.annotation.OperateLog;
+import top.yumoyumo.yumobot.annotation.VirtualThread;
+import top.yumoyumo.yumobot.exception.LocalRuntimeException;
 
 import java.util.concurrent.Future;
 
@@ -19,9 +21,14 @@ import java.util.concurrent.Future;
 @Slf4j
 public class HelpController {
     @OperateLog(operDesc = "help")
-//    @VirtualThread
+    @VirtualThread
     @RequestMapping(value = {"", "/", "/help"})
     public Future<String> help() {
+        try {
+            int i = 1 / 0;
+        } catch (Exception e) {
+            throw new LocalRuntimeException(e);
+        }
         return new AsyncResult<>(
                 """
                         YumoBot
@@ -32,7 +39,7 @@ public class HelpController {
                         3. /天气\t查询天气信息
                         4. /一言\t一言
                         5. 闲聊模式：关闭:<雪豹闭嘴>;开启<雪豹张嘴>
-                        6. /图片\t获取图片
+                        6. /图片\t获取图片.
                         """
         );
     }

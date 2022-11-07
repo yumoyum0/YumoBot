@@ -1,10 +1,9 @@
 package top.yumoyumo.yumobot.aop;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +37,23 @@ public class OperateLogAspect {
     public void operateLog() {
     }
 
+    @Before("operateLog()&&@annotation(log)")
+    public Object auth(JoinPoint jp, OperateLog log) {
+//        AuthEnum authEnum = auth.value();
+//        UserEntity user = UserInterceptor.userHolder.get();
+        Map<String, Object> paramMap = CommonUtil.getRequestParamMap(jp, EXCLUDE_SET);
+        try {
+            Optional.ofNullable(RequestInterceptor.requestHolder.get()).ifPresent((preTrack) -> {
+                preTrack.setSpendTime(System.currentTimeMillis() - Long.parseLong(preTrack.getSpendTime()) + "ms")
+                        .setDescription(log.operDesc())
+                        .setParams(paramMap);
+                logg.info(preTrack.toLogFormat(true));
+            });
+        } catch (Exception e) {
+            throw new LocalRuntimeException(e);
+        }
+        return jp;
+    }
 //    @Around("operateLog()&&@annotation(log)")
 //    public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperateLog log) throws Throwable {
 //        Map<String, Object> paramMap = CommonUtil.getRequestParamMap(proceedingJoinPoint, EXCLUDE_SET);

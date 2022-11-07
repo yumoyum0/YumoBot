@@ -5,6 +5,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
 
 
+import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.pojo.ImageBean;
 import top.yumoyumo.yumobot.util.SpringUtil;
 import com.google.gson.Gson;
@@ -130,6 +131,10 @@ public class DispatcherListener extends SimpleListenerHost {
                     try {
                         url += (p2.equals("") ? "" : "/" + p2) + (p3.equals("") ? "" : "/" + p3);
                         String s = HttpUtil.get(url, 10000);
+                        if (s.contains("errMsg")) {
+                            Result result = new Gson().fromJson(s, Result.class);
+                            s = "出错了喵:" + result.getErrMsg();
+                        }
                         MessageChain chain = new MessageChainBuilder()
                                 .append(Objects.requireNonNull(s))
                                 .build();
