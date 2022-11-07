@@ -62,20 +62,23 @@ public class VirtualThreadAspect {
                 if (result instanceof Future) {
                     result = ((Future<?>) result).get();
                 }
-                Map<String, Object> param = new HashMap<>();
-                Object[] paramValues = proceedingJoinPoint.getArgs();
-                String[] paramNames = ((CodeSignature) proceedingJoinPoint.getSignature()).getParameterNames();
-                for (int i = 0; i < paramNames.length; i++) {
-                    if (EXCLUDE_SET != null && EXCLUDE_SET.contains(paramNames[i])) {
-                        continue;
+                Object finalResult = result;
+                executorService.submit(() -> {
+                    Map<String, Object> param = new HashMap<>();
+                    Object[] paramValues = proceedingJoinPoint.getArgs();
+                    String[] paramNames = ((CodeSignature) proceedingJoinPoint.getSignature()).getParameterNames();
+                    for (int i = 0; i < paramNames.length; i++) {
+                        if (EXCLUDE_SET != null && EXCLUDE_SET.contains(paramNames[i])) {
+                            continue;
+                        }
+                        param.put(paramNames[i], paramValues[i]);
                     }
-                    param.put(paramNames[i], paramValues[i]);
-                }
-                TraceLog traceLog = new TraceLog(virtualThread.value(),
-                        String.valueOf(proceedingJoinPoint.getSignature()),
-                        param,
-                        result);
-                logg.info(traceLog.toLogFormat(true));
+                    TraceLog traceLog = new TraceLog(virtualThread.value(),
+                            String.valueOf(proceedingJoinPoint.getSignature()),
+                            param,
+                            finalResult);
+                    logg.info(traceLog.toLogFormat(true));
+                });
 
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -85,5 +88,5 @@ public class VirtualThreadAspect {
             return result;
         });
     }
-    
+
 }
