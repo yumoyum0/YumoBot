@@ -4,6 +4,7 @@ import cn.hutool.http.HttpUtil;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.pojo.CityBean;
 import top.yumoyumo.yumobot.pojo.NowWeatherBean;
 import top.yumoyumo.yumobot.service.WeatherService;
@@ -24,6 +25,7 @@ public class WeatherServiceImpl implements WeatherService {
     public static final String WEATHER_URL = "https://devapi.qweather.com/v7/weather/now";
 
     @Override
+    @VirtualThread
     public String nowWeather(String location) {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("location", location);

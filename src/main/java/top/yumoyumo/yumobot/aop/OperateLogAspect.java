@@ -40,16 +40,14 @@ public class OperateLogAspect {
 
     @Around("operateLog()&&@annotation(log)")
     public Object aroundMethod(ProceedingJoinPoint proceedingJoinPoint, OperateLog log) throws Throwable {
-        Object result = null;
+        Map<String, Object> paramMap = CommonUtil.getRequestParamMap(proceedingJoinPoint, EXCLUDE_SET);
+        Object result = proceedingJoinPoint.proceed();
         try {
-            Map<String, Object> paramMap = CommonUtil.getRequestParamMap(proceedingJoinPoint, EXCLUDE_SET);
-            result = proceedingJoinPoint.proceed();
-            Object finalResult = result;
             Optional.ofNullable(RequestInterceptor.requestHolder.get()).ifPresent((preTrack) -> {
                 preTrack.setSpendTime(System.currentTimeMillis() - Long.parseLong(preTrack.getSpendTime()) + "ms")
                         .setDescription(log.operDesc())
                         .setParams(paramMap)
-                        .setResult(finalResult);
+                        .setResult(result);
                 logg.info(preTrack.toLogFormat(true));
             });
         } catch (Exception e) {

@@ -42,7 +42,6 @@ public class WeatherController {
 
     @RequestMapping("/{location}")
     @OperateLog(operDesc = "实时天气查询")
-    @VirtualThread
     public Future<String> nowWeather(@PathVariable String location) {
         return new AsyncResult<>(weatherService.nowWeather(location));
     }
