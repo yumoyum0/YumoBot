@@ -25,7 +25,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 
@@ -73,50 +72,47 @@ public class MinioUtil {
         }
     }
 
-
-    //上传文件，返回文件名（文件为数组的形式）
-
     /**
      * Upload list.
      *
      * @param multipartFiles the multipart files
      * @param bucketName     the bucket name
      * @return the list
-     * @throws ExecutionException   the execution exception
-     * @throws InterruptedException the interrupted exception
      */
-    public List<String> upload(MultipartFile[] multipartFiles, String bucketName) throws ExecutionException,
-            InterruptedException {
-//        long start = System.currentTimeMillis();
-        List<String> names = new ArrayList<>(multipartFiles.length);
+    public void upload(MultipartFile[] multipartFiles, String bucketName) {
         ExecutorService executorService = SpringUtil.getBean(ExecutorService.class);
         for (MultipartFile file : multipartFiles) {
             executorService.submit(() -> {
-                //使用 hutools 的判断，文件名为空或者 null 都会抛出异常
-                try {
-                    String fileName = file.getOriginalFilename();
-                    if (StringUtils.isEmpty(fileName)) {
-                        throw new LocalRuntimeException("文件名为空");
-                    }
-                    log.info("上传Minio文件名{}", fileName);
-                    InputStream in = file.getInputStream();
-                    minioClient.putObject(PutObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(fileName)
-                            //在 partSize 填入-1时表示大小不确定
-                            .stream(in, in.available(), -1)
-                            .contentType(file.getContentType())
-                            .build()
-                    );
-                    names.add(fileName);
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                }
+                uploadSimpleFile(file, bucketName);
             });
         }
-        return names;
     }
 
+    public void upload(MultipartFile file, String bucketName) {
+        uploadSimpleFile(file, bucketName);
+    }
+
+    private void uploadSimpleFile(MultipartFile file, String bucketName) {
+        try {
+            String fileName = file.getOriginalFilename();
+            if (StringUtils.isEmpty(fileName)) {
+                throw new LocalRuntimeException("文件名为空");
+            }
+            log.info("上传Minio文件名{}", fileName);
+            InputStream in = file.getInputStream();
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(fileName)
+                    //在 partSize 填入-1时表示大小不确定
+                    .stream(in, in.available(), -1)
+                    .contentType(file.getContentType())
+                    .build()
+            );
+            log.info("上传Minio文件{}完成", fileName);
+        } catch (Exception e) {
+            throw new LocalRuntimeException(e);
+        }
+    }
 
     /**
      * Download response entity.

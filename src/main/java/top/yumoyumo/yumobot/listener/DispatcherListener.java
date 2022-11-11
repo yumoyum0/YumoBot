@@ -50,6 +50,7 @@ public class DispatcherListener extends SimpleListenerHost {
     @Override
     public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
         log.error(exception.getMessage());
+        exception.printStackTrace();
     }
 
 

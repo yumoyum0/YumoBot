@@ -8,10 +8,5 @@ package top.yumoyumo.yumobot.service;
  * @DateTime: 2022 /9/21 16:19
  */
 public interface MinioService {
-    /**
-     * Upload.
-     *
-     * @param target the target
-     */
     void upload(String target);
 }

@@ -15,8 +15,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 /**
- * The type Minio service.
- *
  * @Author: yumo
  * @Description: TODO
  * @DateTime: 2022 /9/21 16:19
@@ -26,31 +24,18 @@ import java.util.concurrent.ExecutorService;
 public class MinioServiceImpl implements MinioService {
     @Resource
     private ExecutorService executorService;
-    /**
-     * The Minio util.
-     */
     @Resource
     MinioUtil minioUtil;
 
     @Override
-    @VirtualThread
     public void upload(String source) {
-        System.out.println(Thread.currentThread());
-        long start = System.currentTimeMillis();
         ImageBean imageBean = new Gson().fromJson(source, ImageBean.class);
         Boolean r18 = imageBean.getData().get(0).getR18();
-
         imageBean.getData().forEach((dataDTO) -> {
             executorService.submit(() -> {
-                System.out.println(Thread.currentThread());
                 String filename = dataDTO.getPid() + "." + dataDTO.getExt();
-                try {
-                    minioUtil.upload(new MultipartFile[]{FileUtil.urlToMultipartFile(dataDTO.getUrls().getOriginal(), filename)}, r18 ? "r18" : "images");
-                } catch (ExecutionException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                minioUtil.upload(FileUtil.urlToMultipartFile(dataDTO.getUrls().getOriginal(), filename), r18 ? "r18" : "images");
             });
         });
-
     }
 }

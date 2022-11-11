@@ -10,9 +10,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 
 
-/**
- * The type Qq bot application.
- */
 @SpringBootApplication
 @EnableAsync
 @MapperScan("top.yumoyumo.yumobot.mapper")
