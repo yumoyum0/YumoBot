@@ -6,6 +6,7 @@ import cn.hutool.http.HttpUtil;
 
 
 import top.yumoyumo.yumobot.common.Result;
+import top.yumoyumo.yumobot.exception.LocalRuntimeException;
 import top.yumoyumo.yumobot.pojo.ImageBean;
 import top.yumoyumo.yumobot.util.SpringUtil;
 import com.google.gson.Gson;
@@ -50,7 +51,6 @@ public class DispatcherListener extends SimpleListenerHost {
     @Override
     public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
         log.error(exception.getMessage());
-        exception.printStackTrace();
     }
 
 

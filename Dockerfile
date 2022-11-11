@@ -28,6 +28,6 @@ COPY cache/account.secrets /cache/
 COPY cache/servers.json /cache/
 COPY cache/session.bin /cache/
 # 启动服务
-ENTRYPOINT ["nohup","java","--enable-preview","-jar","/QQBot.jar","&"]
+ENTRYPOINT ["java","--enable-preview","-Xmx512m","-Xms512m","-jar","/QQBot.jar","--spring.profiles.active=prod","-c"]
 # 暴露端口，看你项目暴露的端口是什么
 EXPOSE 8088
