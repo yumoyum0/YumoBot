@@ -52,7 +52,6 @@ public class DispatcherListener extends SimpleListenerHost {
     @Override
     public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
         log.error(exception.getMessage(), exception.getCause());
-        exception.printStackTrace();
     }
 
 
@@ -95,8 +94,8 @@ public class DispatcherListener extends SimpleListenerHost {
                                     builder.add(sender, new PlainText("uid: " + dataDTO.getUid()));
                                     builder.add(sender, new PlainText("author: " + dataDTO.getAuthor()));
                                     event.getSubject().sendMessage(builder.build()).recallIn(1000 * 30);
-                                } catch (Exception e) {
-                                    throw new LocalRuntimeException(e);
+                                } catch (Exception exception) {
+                                    log.error(exception.getMessage(), exception.getCause());
                                 }
                             });
                         }
