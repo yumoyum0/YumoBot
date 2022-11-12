@@ -3,15 +3,10 @@ package top.yumoyumo.yumobot.listener;
 import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
-
-
-import top.yumoyumo.yumobot.common.Result;
-import top.yumoyumo.yumobot.exception.LocalRuntimeException;
-import top.yumoyumo.yumobot.pojo.ImageBean;
-import top.yumoyumo.yumobot.util.SpringUtil;
 import com.google.gson.Gson;
 import kotlin.coroutines.CoroutineContext;
 import lombok.extern.slf4j.Slf4j;
+import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.EventPriority;
@@ -25,13 +20,19 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.jetbrains.annotations.NotNull;
+import top.yumoyumo.yumobot.common.Result;
+import top.yumoyumo.yumobot.exception.LocalRuntimeException;
+import top.yumoyumo.yumobot.pojo.ImageBean;
+import top.yumoyumo.yumobot.util.SpringUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +51,8 @@ public class DispatcherListener extends SimpleListenerHost {
 
     @Override
     public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception.getCause());
+        exception.printStackTrace();
     }
 
 
@@ -80,31 +82,21 @@ public class DispatcherListener extends SimpleListenerHost {
                         ImageBean imageBean = new Gson().fromJson(s, ImageBean.class);
                         for (ImageBean.DataDTO dataDTO : imageBean.getData()) {
                             executorService.submit(() -> {
-                                ExternalResource resource = null;
-                                try {
-                                    Integer pid = dataDTO.getPid();
-                                    Integer uid = dataDTO.getUid();
-                                    String author = dataDTO.getAuthor();
-                                    CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-                                    CloseableHttpResponse response = httpClient.execute(new HttpGet(dataDTO.getUrls().getOriginal()));
-                                    InputStream in = response.getEntity().getContent();
-                                    resource = ExternalResource.Companion.create(in);
+                                try (
+                                        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+                                        CloseableHttpResponse response = httpClient.execute(new HttpGet(dataDTO.getUrls().getOriginal()));
+                                        InputStream in = response.getEntity().getContent();
+                                        ExternalResource resource = ExternalResource.create(in)) {
                                     Image image = ExternalResource.uploadAsImage(resource, event.getSubject());
-                                    resource.close();
                                     ForwardMessageBuilder builder = new ForwardMessageBuilder(event.getSubject());
                                     User sender = event.getSender();
                                     builder.add(sender, Objects.requireNonNull(image));
-                                    builder.add(sender, new PlainText("pid: " + pid));
-                                    builder.add(sender, new PlainText("uid: " + uid));
-                                    builder.add(sender, new PlainText("author: " + author));
+                                    builder.add(sender, new PlainText("pid: " + dataDTO.getPid()));
+                                    builder.add(sender, new PlainText("uid: " + dataDTO.getUid()));
+                                    builder.add(sender, new PlainText("author: " + dataDTO.getAuthor()));
                                     event.getSubject().sendMessage(builder.build()).recallIn(1000 * 30);
                                 } catch (Exception e) {
-                                    try {
-                                        resource.close();
-                                    } catch (IOException ex) {
-                                        log.error(e.getMessage());
-                                    }
-                                    log.error(e.getMessage());
+                                    throw new LocalRuntimeException(e);
                                 }
                             });
                         }
