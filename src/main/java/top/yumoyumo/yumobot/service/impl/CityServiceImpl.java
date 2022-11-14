@@ -4,6 +4,7 @@ import cn.hutool.http.HttpUtil;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.pojo.CityBean;
 import top.yumoyumo.yumobot.service.CityService;
 

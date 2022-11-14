@@ -93,13 +93,12 @@ public class MinioUtil {
     }
 
     private void uploadSimpleFile(MultipartFile file, String bucketName) {
-        try {
+        try (InputStream in = file.getInputStream()) {
             String fileName = file.getOriginalFilename();
             if (StringUtils.isEmpty(fileName)) {
                 throw new LocalRuntimeException("文件名为空");
             }
             log.info("上传Minio文件名{}", fileName);
-            InputStream in = file.getInputStream();
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(bucketName)
                     .object(fileName)
@@ -123,12 +122,11 @@ public class MinioUtil {
      */
     public ResponseEntity<byte[]> download(String fileName, String bucketName) {
         ResponseEntity<byte[]> responseEntity = null;
-        InputStream in = null;
-        ByteArrayOutputStream out = null;
-        try {
-            in = minioClient.getObject(GetObjectArgs.builder()
-                    .bucket(bucketName).object(fileName).build());
-            out = new ByteArrayOutputStream();
+        try (
+                InputStream in = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(fileName).build());
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ) {
+
             IOUtils.copy(in, out);
             //封装返回值
             byte[] bytes = out.toByteArray();
@@ -145,21 +143,6 @@ public class MinioUtil {
             responseEntity = new ResponseEntity<>(bytes, headers, HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
-        } finally {
-            try {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return responseEntity;
     }

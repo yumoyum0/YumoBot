@@ -3,6 +3,7 @@ package top.yumoyumo.yumobot.service.impl;
 import cn.hutool.http.HttpUtil;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
+import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.pojo.HitikotoBean;
 import top.yumoyumo.yumobot.service.OneMsgService;
 
@@ -33,7 +34,7 @@ public class OneMsgServiceImpl implements OneMsgService {
     }};
 
     @Override
-    public String oneMsg(String c) {
+    public Result oneMsg(String c) {
         HashMap<String, Object> paramMap = new HashMap<>();
         HitikotoBean hitikotoBean = null;
         if (c != null && map.containsKey(c)) {
@@ -47,6 +48,6 @@ public class OneMsgServiceImpl implements OneMsgService {
         builder.append("\n\t—— 《").append(hitikotoBean.getFrom()).append("》 ");
         String fromWho = hitikotoBean.getFromWho();
         builder.append(fromWho == null ? "" : fromWho);
-        return builder.toString();
+        return Result.success(builder.toString());
     }
 }

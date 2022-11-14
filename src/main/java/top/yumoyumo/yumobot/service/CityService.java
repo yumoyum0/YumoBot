@@ -1,5 +1,7 @@
 package top.yumoyumo.yumobot.service;
 
+import top.yumoyumo.yumobot.common.Result;
+
 /**
  * @Author: yumo
  * @Description: TODO

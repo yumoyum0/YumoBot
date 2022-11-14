@@ -10,8 +10,12 @@ import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.PlainText;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.util.SpringUtil;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
@@ -26,6 +30,8 @@ import java.util.concurrent.ExecutorService;
  */
 @Slf4j
 public class ChatListener extends SimpleListenerHost {
+    @Resource
+    RestTemplate restTemplate;
 
     public static final String DISPATCH_URL = "http://127.0.0.1:8088";
 
@@ -36,27 +42,24 @@ public class ChatListener extends SimpleListenerHost {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onMessage(@NotNull GroupMessageEvent event) {
-        ExecutorService executorService = SpringUtil.getBean(ExecutorService.class);
-        executorService.submit(() -> {
-            if (new Random().nextInt(100000) % 999 < 314) {
-                long id = event.getSubject().getId();
-                if (CloseListener.isClose.get(id)) return;
-                String content = ((PlainText) Objects.requireNonNull(event.getMessage().stream().filter(PlainText.class::isInstance).findFirst().orElse(new PlainText("")))).getContent().trim();
-                if (!content.contains("/")) {
-                    if (!content.equals("")) {
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("content", content);
-                        params.put("type", 2);
-                        params.put("from", event.getSender().getId());
-                        params.put("fromName", event.getSenderName());
-                        params.put("to", event.getSource().getTargetId());
-                        params.put("toName", event.getSource().getTarget().getName());
-                        String s = HttpUtil.get(DISPATCH_URL + "/chat", params);
-                        event.getSubject().sendMessage(s);
-                    }
+        if (new Random().nextInt(100000) % 999 < 314) {
+            long id = event.getSubject().getId();
+            if (CloseListener.isClose.get(id)) return;
+            String content = ((PlainText) Objects.requireNonNull(event.getMessage().stream().filter(PlainText.class::isInstance).findFirst().orElse(new PlainText("")))).getContent().trim();
+            if (!content.contains("/")) {
+                if (!content.equals("")) {
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("content", content);
+                    params.put("type", 2);
+                    params.put("from", event.getSender().getId());
+                    params.put("fromName", event.getSenderName());
+                    params.put("to", event.getSource().getTargetId());
+                    params.put("toName", event.getSource().getTarget().getName());
+                    ResponseEntity<Result> entity = restTemplate.getForEntity(DISPATCH_URL + "/chat", Result.class, params);
+                    event.getSubject().sendMessage((String) entity.getBody().getData());
                 }
             }
-        });
+        }
     }
 
 }

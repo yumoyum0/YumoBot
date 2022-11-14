@@ -20,11 +20,14 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.exception.LocalRuntimeException;
 import top.yumoyumo.yumobot.pojo.ImageBean;
 import top.yumoyumo.yumobot.util.SpringUtil;
 
+import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +49,8 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public class DispatcherListener extends SimpleListenerHost {
+    @Resource
+    RestTemplate restTemplate;
 
     public static final String DISPATCH_URL = "http://127.0.0.1:8088";
 
@@ -58,7 +63,7 @@ public class DispatcherListener extends SimpleListenerHost {
     @EventHandler(priority = EventPriority.LOW)
     public void onMessage(@NotNull MessageEvent event) throws IOException { // 可以抛出任何异常, 将在 handleException 处理
         String content = ((PlainText) Objects.requireNonNull(event.getMessage().stream().filter(PlainText.class::isInstance).findFirst().orElse(null))).getContent().trim();
-        Matcher matcher = Pattern.compile("^/(版本|人设|城市|天气|一言|图片|语音|help|课表|)[\\s]*([^\\s]*)[\\s]*([^\\s]*)[\\s]*([^\\s]*)$").matcher(content);
+        Matcher matcher = Pattern.compile("^/(版本|人设|城市|天气|一言|图片|help|课表|)[\\s]*([^\\s]*)[\\s]*([^\\s]*)[\\s]*([^\\s]*)$").matcher(content);
         if (matcher.find()) {
             final HashMap<String, Object> params = new HashMap<>();
             String p1 = matcher.group(1).equals("") ? "" : "/" + matcher.group(1);
@@ -76,16 +81,17 @@ public class DispatcherListener extends SimpleListenerHost {
                     params.put("num", p2);
                     params.put("tag", p3);
                     params.put("r18", p4);
-                    String s = HttpUtil.get(url, params);
-                    if (!s.equals("无")) {
-                        ImageBean imageBean = new Gson().fromJson(s, ImageBean.class);
-                        for (ImageBean.DataDTO dataDTO : imageBean.getData()) {
+                    Result result = restTemplate.getForEntity(url, Result.class, params).getBody();
+                    if (result.getData() != null) {
+
+                        for (ImageBean.DataDTO dataDTO : ((ImageBean) result.getData()).getData()) {
                             executorService.submit(() -> {
                                 try (
                                         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
                                         CloseableHttpResponse response = httpClient.execute(new HttpGet(dataDTO.getUrls().getOriginal()));
                                         InputStream in = response.getEntity().getContent();
-                                        ExternalResource resource = ExternalResource.create(in)) {
+                                        ExternalResource resource = ExternalResource.create(in)
+                                ) {
                                     Image image = ExternalResource.uploadAsImage(resource, event.getSubject());
                                     ForwardMessageBuilder builder = new ForwardMessageBuilder(event.getSubject());
                                     User sender = event.getSender();
@@ -102,40 +108,34 @@ public class DispatcherListener extends SimpleListenerHost {
                     }
                     break;
                 }
-                case "/语音": {
-                    params.put("content", p3);
-                    String s = HttpUtil.get(url + "/" + p2, params);
-                    FileUtil.writeBytes(Base64.decodeBase64(s), new File("src/main/resources/" + p3 + ".wav"));
-                    InputStream in = new ByteArrayInputStream(Base64Decoder.decode(s));
-                    ExternalResource resource = ExternalResource.Companion.create(in);
-                    Voice audio = ExternalResource.uploadAsVoice(resource, event.getSubject());
-                    resource.close();
-                    event.getSubject().sendMessage(audio);
-                    break;
-                }
+//                case "/语音": {
+//                    params.put("content", p3);
+//
+//                    FileUtil.writeBytes(Base64.decodeBase64(s), new File("src/main/resources/" + p3 + ".wav"));
+//                    InputStream in = new ByteArrayInputStream(Base64Decoder.decode(s));
+//                    ExternalResource resource = ExternalResource.Companion.create(in);
+//                    Voice audio = ExternalResource.uploadAsVoice(resource, event.getSubject());
+//                    resource.close();
+//                    event.getSubject().sendMessage(audio);
+//                    break;
+//                }
                 case "/版本":
                 case "/城市":
                 case "/一言":
                 case "/help":
                 case "/人设":
                 case "/天气":
-                case "/课表":
-                    try {
-                        url += (p2.equals("") ? "" : "/" + p2) + (p3.equals("") ? "" : "/" + p3);
-                        String s = HttpUtil.get(url, 10000);
-                        if (s.contains("errMsg")) {
-                            Result result = new Gson().fromJson(s, Result.class);
-                            s = "出错了喵:" + result.getErrMsg();
-                        }
+                case "/课表": {
+                    url += (p2.equals("") ? "" : "/" + p2) + (p3.equals("") ? "" : "/" + p3);
+                    Result result = restTemplate.getForEntity(url, Result.class).getBody();
+                    if (result.getData() != null) {
                         MessageChain chain = new MessageChainBuilder()
-                                .append(Objects.requireNonNull(s))
+                                .append((String) result.getData())
                                 .build();
                         event.getSubject().sendMessage(chain);
-                    } catch (Exception e) {
-                        event.getSubject().sendMessage("喵");
-                        log.error(e.getMessage());
                     }
                     break;
+                }
             }
         }
     }

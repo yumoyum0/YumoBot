@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
+import top.yumoyumo.yumobot.common.Result;
 
 import java.util.concurrent.Future;
 
@@ -20,8 +21,8 @@ public class PersonalController {
 
     @RequestMapping()
     @VirtualThread("人设")
-    public Future<String> log() {
-        return new AsyncResult<>(
+    public Future<Result> log() {
+        return new AsyncResult<>(Result.success(
                 """
                         本名：芋泥波波
                         别名：芋啵
@@ -32,6 +33,8 @@ public class PersonalController {
                         特点：天然呆，吃货，无性，娇憨，中二，腹黑，爱喝芋泥波波奶茶
                         简介：取自其主羽墨之名和自身的bot身份，因其主钟爱芋泥波波奶茶而得名
                         """
+        )
+
         );
     }
 }

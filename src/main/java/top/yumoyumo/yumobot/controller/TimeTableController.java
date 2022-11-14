@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
+import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.service.TimeTableService;
 
 import javax.annotation.Resource;
@@ -28,8 +29,8 @@ public class TimeTableController {
 
     @RequestMapping("/help")
     @VirtualThread("课表help")
-    public Future<String> help() {
-        return new AsyncResult<>(
+    public Future<Result> help() {
+        return new AsyncResult<>(Result.success(
                 """
                         课表查询help:
                         --------------------
@@ -37,25 +38,32 @@ public class TimeTableController {
                         例:
                         /课表
                         /课表 plus 1
-                        """);
+                        """
+        ));
     }
 
     @GetMapping(value = {"", "/", "/today"})
     @VirtualThread("查询今日课表")
-    public Future<String> today() {
-        return new AsyncResult<>(timeTableService.getTimeTableByDay(LocalDateTime.now()));
+    public Future<Result> today() {
+        return new AsyncResult<>(
+                Result.success(timeTableService.getTimeTableByDay(LocalDateTime.now()))
+        );
     }
 
 
     @GetMapping("/plus/{num}")
     @VirtualThread("查询未来课表")
-    public Future<String> plus(@PathVariable Integer num) {
-        return new AsyncResult<>(timeTableService.getTimeTableByDay(LocalDateTime.now().plusDays(num)));
+    public Future<Result> plus(@PathVariable Integer num) {
+        return new AsyncResult<>(
+                Result.success(timeTableService.getTimeTableByDay(LocalDateTime.now().plusDays(num)))
+        );
     }
 
     @GetMapping("/minus/{num}")
     @VirtualThread("查询过去课表")
-    public Future<String> minus(@PathVariable Integer num) {
-        return new AsyncResult<>(timeTableService.getTimeTableByDay(LocalDateTime.now().minusDays(num)));
+    public Future<Result> minus(@PathVariable Integer num) {
+        return new AsyncResult<>(
+                Result.success(timeTableService.getTimeTableByDay(LocalDateTime.now().minusDays(num)))
+        );
     }
 }

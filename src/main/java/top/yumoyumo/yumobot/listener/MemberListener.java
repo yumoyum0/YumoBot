@@ -63,11 +63,8 @@ public class MemberListener extends SimpleListenerHost {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onNudgeMessage(@NotNull NudgeEvent event) {
-        ExecutorService executorService = SpringUtil.getBean("executorService", ExecutorService.class);
         if (!event.getFrom().getNick().equals("YumoBot"))
-            executorService.submit(() -> {
-                event.getTarget().nudge().sendTo(event.getSubject());
-            });
+            event.getTarget().nudge().sendTo(event.getSubject());
     }
 
     /**
@@ -75,15 +72,12 @@ public class MemberListener extends SimpleListenerHost {
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onFlashImageMessage(@NotNull MessageEvent event) {
-        ExecutorService executorService = SpringUtil.getBean("executorService", ExecutorService.class);
-        executorService.submit(() -> {
-            FlashImage flashImage = ((FlashImage) (event.getMessage().stream().filter(FlashImage.class::isInstance).findFirst().orElse(null)));
-            if (flashImage != null) {
-                ForwardMessageBuilder builder = new ForwardMessageBuilder(event.getSubject());
-                User sender = event.getSender();
-                builder.add(sender, flashImage.getImage());
-                event.getSubject().sendMessage(builder.build()).recallIn(1000 * 60);
-            }
-        });
+        FlashImage flashImage = ((FlashImage) (event.getMessage().stream().filter(FlashImage.class::isInstance).findFirst().orElse(null)));
+        if (flashImage != null) {
+            ForwardMessageBuilder builder = new ForwardMessageBuilder(event.getSubject());
+            User sender = event.getSender();
+            builder.add(sender, flashImage.getImage());
+            event.getSubject().sendMessage(builder.build()).recallIn(1000 * 60);
+        }
     }
 }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.pojo.TimeTableBean;
 import top.yumoyumo.yumobot.service.RedisService;
 import top.yumoyumo.yumobot.service.TimeTableService;
@@ -59,6 +60,8 @@ public class TimeTableServiceImpl implements TimeTableService {
                                 "-----------------\n");
             }
         }
-        return builder.toString().equals("") ? "今日无课喵" : builder.append(localDateTime.toLocalDate()).toString();
+        return builder.toString().equals("") ?
+                "今日无课喵" :
+                builder.append(localDateTime.toLocalDate()).toString();
     }
 }

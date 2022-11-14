@@ -1,11 +1,14 @@
 package top.yumoyumo.yumobot.controller;
 
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
+import top.yumoyumo.yumobot.common.Result;
+import top.yumoyumo.yumobot.pojo.ImageBean;
 import top.yumoyumo.yumobot.service.ImageService;
 
 import javax.annotation.Resource;
@@ -28,8 +31,8 @@ public class ImageController {
 
     @RequestMapping("/help")
     @VirtualThread("图片help")
-    public Future<String> help() {
-        return new AsyncResult<>(
+    public Future<Result> help() {
+        return new AsyncResult<>(Result.success(
                 """
                         图片help:
                         --------------------
@@ -37,15 +40,17 @@ public class ImageController {
                         例:
                         /图片 10
                         /图片 10 原神
-                        """
+                        """)
         );
     }
 
     @RequestMapping(value = {"", "/"})
     @VirtualThread("获取图片")
-    public Future<String> getImage(@RequestParam(required = false) String tag,
+    public Future<Result> getImage(@RequestParam(required = false) String tag,
                                    @RequestParam(required = false) String num,
                                    @RequestParam(required = false) String r18) {
-        return new AsyncResult<>(imageService.getImage(tag, num, r18));
+        ImageBean imageBean = new Gson().fromJson(imageService.getImage(tag, num, r18), ImageBean.class);
+        if (imageBean.getError().isEmpty()) return new AsyncResult<>(Result.success(imageBean));
+        else return new AsyncResult<>(Result.failure(imageBean.getError()));
     }
 }
