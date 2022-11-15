@@ -33,21 +33,18 @@ public class OneMsgServiceImpl implements OneMsgService {
         put("哲学", "k");
     }};
 
+    private static final String oneMsgFormat =
+            """
+                    %s
+                    -《%s》 %s
+                    """;
+
     @Override
     public Result oneMsg(String c) {
         HashMap<String, Object> paramMap = new HashMap<>();
-        HitikotoBean hitikotoBean = null;
-        if (c != null && map.containsKey(c)) {
-            paramMap.put("c", map.get(c));
-            hitikotoBean = new Gson().fromJson(HttpUtil.get(ONEMSG_URL, paramMap), HitikotoBean.class);
-        } else {
-            hitikotoBean = new Gson().fromJson(HttpUtil.get(ONEMSG_URL), HitikotoBean.class);
-        }
-        StringBuilder builder = new StringBuilder();
-        builder.append(hitikotoBean.getHitokoto());
-        builder.append("\n\t—— 《").append(hitikotoBean.getFrom()).append("》 ");
+        if (c != null) paramMap.put("c", map.get(c));
+        HitikotoBean hitikotoBean = new Gson().fromJson(HttpUtil.get(ONEMSG_URL, paramMap), HitikotoBean.class);
         String fromWho = hitikotoBean.getFromWho();
-        builder.append(fromWho == null ? "" : fromWho);
-        return Result.success(builder.toString());
+        return Result.success(String.format(oneMsgFormat, hitikotoBean.getHitokoto(), hitikotoBean.getFrom(), fromWho == null ? "" : fromWho));
     }
 }

@@ -18,20 +18,14 @@ import java.util.Map;
  **/
 @Configuration
 public class MqConfig {
-    public static final String DELAYED_QUEUE_NAME = "delayed.queue";
     public static final String DELAYED_EXCHANGE_NAME = "delayed.exchange";
-    public static final String DELAYED_ROUTING_KEY = "delayed.routingkey";
+    public static final String CUSTOM_QUEUE_NAME = "custom.queue";
+    public static final String CUSTOM_ROUTING_KEY = "custom.routingkey";
+    public static final String TIMETABLE_QUEUE_NAME = "timetable.queue";
+    public static final String TIMETABLE_ROUTING_KEY = "timetable.routingkey";
 
     /**
-     * 声明队列
-     */
-    @Bean
-    public Queue delayedQueue() {
-        return new Queue(DELAYED_QUEUE_NAME);
-    }
-
-    /**
-     * @Description: 声明延迟交换机
+     * 声明延迟交换机
      */
     @Bean
     public CustomExchange delayedExchange() {
@@ -43,11 +37,37 @@ public class MqConfig {
     }
 
     /**
-     * 绑定队列和交换机
+     * 声明自定义消息队列
      */
     @Bean
-    public Binding bindingDelayedQueue(@Qualifier("delayedQueue") Queue queue,
-                                       @Qualifier("delayedExchange") CustomExchange delayedExchange) {
-        return BindingBuilder.bind(queue).to(delayedExchange).with(DELAYED_ROUTING_KEY).noargs();
+    public Queue customQueue() {
+        return new Queue(CUSTOM_QUEUE_NAME);
     }
+
+    /**
+     * 绑定课表队列和延迟交换机
+     */
+    @Bean
+    public Binding bindingCustomQueue(@Qualifier("customQueue") Queue queue,
+                                      @Qualifier("delayedExchange") CustomExchange delayedExchange) {
+        return BindingBuilder.bind(queue).to(delayedExchange).with(CUSTOM_ROUTING_KEY).noargs();
+    }
+
+    /**
+     * 声明课表队列
+     */
+    @Bean
+    public Queue timetableQueue() {
+        return new Queue(TIMETABLE_QUEUE_NAME);
+    }
+
+    /**
+     * 绑定课表队列和延迟交换机
+     */
+    @Bean
+    public Binding bindingTimetableQueue(@Qualifier("timetableQueue") Queue queue,
+                                         @Qualifier("delayedExchange") CustomExchange delayedExchange) {
+        return BindingBuilder.bind(queue).to(delayedExchange).with(TIMETABLE_ROUTING_KEY).noargs();
+    }
+
 }

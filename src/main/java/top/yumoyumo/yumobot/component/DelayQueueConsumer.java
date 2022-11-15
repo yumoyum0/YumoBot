@@ -12,6 +12,9 @@ import top.yumoyumo.yumobot.annotation.VirtualThread;
 import javax.annotation.Resource;
 import java.util.Date;
 
+import static top.yumoyumo.yumobot.config.MqConfig.CUSTOM_QUEUE_NAME;
+import static top.yumoyumo.yumobot.config.MqConfig.TIMETABLE_QUEUE_NAME;
+
 /**
  * @Author: yumo
  * @Description: 延迟队列消费者
@@ -26,13 +29,20 @@ public class DelayQueueConsumer {
     @Value("${master.id}")
     public Integer masterId;
 
-    public static final String DELAYED_QUEUE_NAME = "delayed.queue";
 
-    @VirtualThread
-    @RabbitListener(queues = DELAYED_QUEUE_NAME)
+    @VirtualThread("接收custom队列的消息")
+    @RabbitListener(queues = CUSTOM_QUEUE_NAME)
     public void receiveDelayedQueue(Message message) {
+        bot.getFriend(masterId).sendMessage(new String(message.getBody()));
+        log.info("当前时间：{},收到custom队列的消息：{}", new Date(), new String(message.getBody()));
+    }
+
+    @VirtualThread("接收timetable队列的消息")
+    @RabbitListener(queues = TIMETABLE_QUEUE_NAME)
+    public void receiveTimetableQueue(Message message) {
         SimpleServiceMessage simpleServiceMessage = new SimpleServiceMessage(1, new String(message.getBody()));
         bot.getFriend(masterId).sendMessage(simpleServiceMessage);
-        log.info("当前时间：{},收到延时队列的消息：{}", new Date().toString(), new String(message.getBody()));
+        log.info("当前时间：{},收到timetable队列的消息：{}", new Date(), new String(message.getBody()));
     }
+
 }

@@ -2,7 +2,6 @@ package top.yumoyumo.yumobot.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,9 +23,16 @@ public class ProducerController {
     private ProducerService producerService;
 
 
-    @GetMapping("sendDelayMsg")
-    @VirtualThread("发送延迟消息")
-    public void sendDelayMsg(@RequestParam String id) {
-        producerService.sendDelayMsg(id);
+    @RequestMapping("sendCustomMsg")
+    @VirtualThread("发送自定义消息")
+    public void sendCustomMsg(@RequestParam String content, @RequestParam(required = false, defaultValue = "0") String delay) {
+        producerService.sendCustomMsg(content, delay);
+    }
+
+    @RequestMapping("sendTimeTableMsg")
+    @VirtualThread("发送课表消息")
+    public void sendTimeTableMsg(@RequestParam String id) {
+        producerService.sendTimeTableMsgFromRedis(id);
     }
 }
+

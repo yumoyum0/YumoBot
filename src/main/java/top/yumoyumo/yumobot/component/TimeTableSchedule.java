@@ -22,6 +22,6 @@ public class TimeTableSchedule {
     private void TimeTableJob() {
         Map<String, Object> pram = new HashMap<>();
         pram.put("id", "yumo");
-        HttpUtil.get(DISPATCH_URL + "/msg/sendDelayMsg", pram);
+        HttpUtil.get(DISPATCH_URL + "/msg/sendTimeTableMsg", pram);
     }
 }

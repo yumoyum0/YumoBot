@@ -5,9 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.pojo.TimeTableBean;
 import top.yumoyumo.yumobot.service.RedisService;
 import top.yumoyumo.yumobot.service.TimeTableService;
@@ -37,6 +35,15 @@ public class TimeTableServiceImpl implements TimeTableService {
     @Resource
     private RedisService redisService;
 
+    private static final String timetableFormat =
+            """
+                    课程：%s
+                    地点：%s
+                    起始：%s-%s
+                    -----------------
+                    """;
+    ;
+
     @Override
     public String getTimeTableByDay(LocalDateTime localDateTime) {
         Calendar calendar = new Calendar.Builder().setDate(localDateTime.getYear(), localDateTime.getMonth().getValue(), localDateTime.getDayOfMonth()).build();
@@ -44,20 +51,19 @@ public class TimeTableServiceImpl implements TimeTableService {
         List<TimeTableBean> timeTableBeanList = new Gson().fromJson(s, new TypeToken<List<TimeTableBean>>() {
         }.getType());
         StringBuilder builder = new StringBuilder();
-        builder.append("""
-                课表
-                -----------------
-                """);
+        builder.append(
+                """
+                        课表
+                        -----------------
+                        """);
         if (!timeTableBeanList.isEmpty())
-
             timeTableBeanList.sort(Comparator.comparingInt(TimeTableBean::getSectionstart));
         for (TimeTableBean timeTableBean : timeTableBeanList) {
             if (timeTableBean.getWeekarr().contains(calendar.get(Calendar.WEEK_OF_YEAR) - 35) && localDateTime.getDayOfWeek().getValue() == timeTableBean.getDay()) {
-                builder.append(
-                        "课程：" + timeTableBean.getName() + "\n" +
-                                "地点：" + timeTableBean.getLocale() + "\n" +
-                                "起始：" + TimeTableUtil.getStart(timeTableBean.getSectionstart()) + "-" + TimeTableUtil.getEnd(timeTableBean.getSectionend()) + "\n" +
-                                "-----------------\n");
+                builder.append(String.format(timetableFormat,
+                        timeTableBean.getName(),
+                        timeTableBean.getLocale(),
+                        TimeTableUtil.getStart(timeTableBean.getSectionstart()), TimeTableUtil.getEnd(timeTableBean.getSectionend())));
             }
         }
         return builder.toString().equals("") ?

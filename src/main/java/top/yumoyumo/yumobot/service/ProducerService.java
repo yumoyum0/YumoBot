@@ -7,5 +7,7 @@ package top.yumoyumo.yumobot.service;
  **/
 public interface ProducerService {
 
-    void sendDelayMsg(String id);
+    void sendCustomMsg(String content, String delay);
+
+    void sendTimeTableMsgFromRedis(String id);
 }

@@ -25,6 +25,16 @@ public class CityServiceImpl implements CityService {
 
 
     public static final String CITY_URL = "https://geoapi.qweather.com/v2/city/lookup";
+    private final static String cityFormat =
+            """
+                    名称: %s
+                    ID: %s
+                    经度: %s
+                    纬度: %s
+                    上级行政区划: %s
+                    所属国家: %s
+                    时区: %s
+                    """;
 
     @Override
     public String location(String location) {
@@ -32,16 +42,14 @@ public class CityServiceImpl implements CityService {
         paramMap.put("location", location);
         paramMap.put("key", key);
         String res = HttpUtil.get(CITY_URL, paramMap);
-        StringBuilder builder = new StringBuilder();
-        CityBean city = new Gson().fromJson(res, CityBean.class);
-        CityBean.LocationDTO l = city.getLocation().get(0);
-        builder.append("名称: ").append(l.getName());
-        builder.append("\nID: ").append(l.getId());
-        builder.append("\n经度: ").append(l.getLon());
-        builder.append("\n纬度: ").append(l.getLat());
-        builder.append("\n上级行政区划: ").append(l.getAdm2());
-        builder.append("\n所属国家: ").append(l.getCountry());
-        builder.append("\n时区: ").append(l.getTz());
-        return builder.toString();
+        CityBean.LocationDTO l = new Gson().fromJson(res, CityBean.class).getLocation().get(0);
+        return String.format(cityFormat,
+                l.getName(),
+                l.getId(),
+                l.getLon(),
+                l.getLat(),
+                l.getAdm2(),
+                l.getCountry(),
+                l.getTz());
     }
 }
