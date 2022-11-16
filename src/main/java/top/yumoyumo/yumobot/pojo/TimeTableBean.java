@@ -19,20 +19,12 @@ public class TimeTableBean {
     private Integer day;
     @JsonProperty("name")
     private String name;
-    @JsonProperty("week")
-    private String week;
-    @JsonProperty("weekstart")
-    private Integer weekstart;
-    @JsonProperty("weekend")
-    private Integer weekend;
     @JsonProperty("weekarr")
     private List<Integer> weekarr;
     @JsonProperty("sectionstart")
     private Integer sectionstart;
     @JsonProperty("sectionend")
     private Integer sectionend;
-    @JsonProperty("teacher")
-    private String teacher;
     @JsonProperty("locale")
     private String locale;
 }

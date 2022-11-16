@@ -33,6 +33,18 @@ public class ProducerServiceImpl implements ProducerService {
     @Resource
     private RedisService redisService;
     public static final String TIMETABLE = "timetable:";
+    private static final String timetableFormat = """
+            <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+            <msg serviceID="1" templateID="1" action="web" brief="上课提醒" sourceMsgId="0" url="https://yumoyumo.top" flag="37" adverSign="0" multiMsgFlag="0">
+                <item layout="6" advertiser_id="0" aid="0">
+                    <title>上课提醒</title>
+                    <summary>课程：%s</summary>
+                    <summary>地点：%s</summary>
+                    <summary>起始: %s - %s</summary>
+                </item>
+                <source name="" icon="" action="" appid="-1" />
+            </msg>
+            """;
 
     @Override
     public void sendCustomMsg(String content, String delay) {
@@ -53,25 +65,19 @@ public class ProducerServiceImpl implements ProducerService {
         int curDayOfWeek = LocalDateTime.now().getDayOfWeek().getValue();
         for (TimeTableBean timeTableBean : timeTableBeanList) {
             if (timeTableBean.getWeekarr().contains(curWeek) && curDayOfWeek == timeTableBean.getDay()) {
-                String format = """
-                        <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-                        <msg serviceID="1" templateID="1" action="web" brief="上课提醒" sourceMsgId="0" url="https://yumoyumo.top" flag="37" adverSign="0" multiMsgFlag="0">
-                            <item layout="6" advertiser_id="0" aid="0">
-                                <title>上课提醒</title>
-                                <summary>课程：{}</summary>
-                                <summary>地点：{}</summary>
-                                <summary>起始: {}</summary>
-                            </item>
-                            <source name="" icon="" action="" appid="-1" />
-                        </msg>
-                        """;
-                String messageBody = String.format(format, timeTableBean.getName(), timeTableBean.getLocale(), TimeTableUtil.getStart(timeTableBean.getSectionstart()) + "-" + TimeTableUtil.getEnd(timeTableBean.getSectionend()));
+                String messageBody = String.format(timetableFormat,
+                        timeTableBean.getName(),
+                        timeTableBean.getLocale(),
+                        TimeTableUtil.getStart(timeTableBean.getSectionstart()),
+                        TimeTableUtil.getEnd(timeTableBean.getSectionend()));
                 long delayTime = Duration.between(LocalTime.now(), TimeTableUtil.getStart(timeTableBean.getSectionstart())).getSeconds() * 1000;
+                // 发送开课前30min的提醒
                 rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, TIMETABLE_ROUTING_KEY, messageBody,
                         correlationData -> {
                             correlationData.getMessageProperties().setDelay(Math.toIntExact(delayTime - 1000 * 60 * 30));
                             return correlationData;
                         });
+                // 发送开课前15min的提醒
                 rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, TIMETABLE_ROUTING_KEY, messageBody,
                         correlationData -> {
                             correlationData.getMessageProperties().setDelay(Math.toIntExact(delayTime - 1000 * 60 * 15));

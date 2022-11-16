@@ -25,7 +25,8 @@ public class ProducerController {
 
     @RequestMapping("sendCustomMsg")
     @VirtualThread("发送自定义消息")
-    public void sendCustomMsg(@RequestParam String content, @RequestParam(required = false, defaultValue = "0") String delay) {
+    public void sendCustomMsg(@RequestParam String content,
+                              @RequestParam(required = false, defaultValue = "0") String delay) {
         producerService.sendCustomMsg(content, delay);
     }
 

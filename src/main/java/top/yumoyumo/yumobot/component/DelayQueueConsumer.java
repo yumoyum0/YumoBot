@@ -29,7 +29,6 @@ public class DelayQueueConsumer {
     @Value("${master.id}")
     public Integer masterId;
 
-
     @VirtualThread("接收custom队列的消息")
     @RabbitListener(queues = CUSTOM_QUEUE_NAME)
     public void receiveDelayedQueue(Message message) {
@@ -44,5 +43,4 @@ public class DelayQueueConsumer {
         bot.getFriend(masterId).sendMessage(simpleServiceMessage);
         log.info("当前时间：{},收到timetable队列的消息：{}", new Date(), new String(message.getBody()));
     }
-
 }

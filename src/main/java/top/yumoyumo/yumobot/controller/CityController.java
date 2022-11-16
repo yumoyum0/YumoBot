@@ -10,11 +10,11 @@ import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.service.CityService;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * The type City controller.
- *
  * @Author: yumo
  * @Description: 城市信息查询
  * @DateTime: 2022 /9/8 13:22
