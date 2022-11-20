@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -33,7 +34,6 @@ public class FileUtil {
             log.info("urlToMultipartFile文件转换中，url为：" + url + "文件名称为：" + fileName);
             httpUrl = (HttpURLConnection) new URL(url).openConnection();
             httpUrl.connect();
-
 
             multipartFile = getMultipartFile(httpUrl.getInputStream(), fileName);
             log.info("urlToMultipartFile文件转换完成" + httpUrl);
