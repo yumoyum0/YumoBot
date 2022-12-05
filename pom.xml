@@ -175,6 +175,21 @@
             <version>5.8.6</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yomahub</groupId>
+            <artifactId>liteflow-spring-boot-starter</artifactId>
+            <version>2.9.4</version>
+        </dependency>
 
     </dependencies>
 
@@ -214,6 +229,14 @@
                     <arguments>--enable-preview</arguments>
                     <jvmArguments>--enable-preview</jvmArguments>
                     <mainClass>top.yumoyumo.yumobot.YumoBotApplication</mainClass>
+                    <!--                    &lt;!&ndash;给jar瘦身&ndash;&gt;-->
+                    <!--                    <layout>ZIP</layout>-->
+                    <!--                    <includes>-->
+                    <!--                        <include>-->
+                    <!--                            <groupId>non-exists</groupId>-->
+                    <!--                            <artifactId>non-exists</artifactId>-->
+                    <!--                        </include>-->
+                    <!--                    </includes>-->
                 </configuration>
                 <executions>
                     <execution>

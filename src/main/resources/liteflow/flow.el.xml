@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE flow PUBLIC  "liteflow" "liteflow.dtd">
+<flow>
+    <chain name="dispatchChain">
+        THEN(
+        IF(matchCmp,
+        THEN(
+        initCmp,
+        SWITCH(pathCmp).TO(imageChain,pathVarCmp)))
+        );
+    </chain>
+
+    <chain name="imageChain">
+        THEN(
+        IF(openImageCmp,imageCmp)
+        );
+    </chain>
+</flow>

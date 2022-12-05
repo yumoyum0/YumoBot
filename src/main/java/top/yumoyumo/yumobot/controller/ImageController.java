@@ -1,17 +1,17 @@
 package top.yumoyumo.yumobot.controller;
 
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.common.Result;
-import top.yumoyumo.yumobot.pojo.ImageBean;
 import top.yumoyumo.yumobot.service.ImageService;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.Future;
 
 /**
@@ -49,8 +49,15 @@ public class ImageController {
     public Future<Result> getImage(@RequestParam(required = false) String tag,
                                    @RequestParam(required = false) String num,
                                    @RequestParam(required = false) String r18) {
-        ImageBean imageBean = new Gson().fromJson(imageService.getImage(tag, num, r18), ImageBean.class);
-        if (imageBean.getError().isEmpty()) return new AsyncResult<>(Result.success(imageBean));
-        else return new AsyncResult<>(Result.failure(imageBean.getError()));
+
+        return new AsyncResult<>(Result.success(imageService.getImage(tag, num, r18)));
+    }
+
+    @GetMapping("/download")
+    public void downloadImages(HttpServletResponse response,
+                               @RequestParam(required = false) String tag,
+                               @RequestParam(required = false) String num,
+                               @RequestParam(required = false) String r18) {
+        imageService.download(response, tag, num, r18);
     }
 }

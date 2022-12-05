@@ -36,9 +36,9 @@ public class Result implements Serializable {
     /**
      * 数据对象
      */
-    private Object data;
+    private String data;
 
-    public static Result success(Object data) {
+    public static Result success(String data) {
         return new Result(true, 200, null, data);
     }
 

@@ -9,14 +9,14 @@ import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * The type File util.
- */
+ * @Author: yumo
+ * @Description: 文件工具类
+ **/
 @Slf4j
 public class FileUtil {
 
@@ -34,7 +34,6 @@ public class FileUtil {
             log.info("urlToMultipartFile文件转换中，url为：" + url + "文件名称为：" + fileName);
             httpUrl = (HttpURLConnection) new URL(url).openConnection();
             httpUrl.connect();
-
             multipartFile = getMultipartFile(httpUrl.getInputStream(), fileName);
             log.info("urlToMultipartFile文件转换完成" + httpUrl);
         } catch (IOException e) {
@@ -44,6 +43,33 @@ public class FileUtil {
         }
 
         return multipartFile;
+    }
+
+    /**
+     * url转file
+     *
+     * @param url      文件url
+     * @param fileName 文件新名称
+     * @return file
+     */
+    public static File urlToFile(String url, String fileName) {
+        HttpURLConnection httpUrl = null;
+        File file = null;
+        try {
+            log.info("urlToFile文件转换中，url为：" + url + "文件名称为：" + fileName);
+            httpUrl = (HttpURLConnection) new URL(url).openConnection();
+            httpUrl.connect();
+            FileItem fileItem = createFileItem(httpUrl.getInputStream(), fileName);
+            file = new File(System.getProperty("java.io.tmpdir") + File.separator + fileName);
+            fileItem.write(file);
+            log.info("urlToFile文件转换完成" + httpUrl);
+        } catch (Exception e) {
+            log.error("url解析失败，抛出url解析异常");
+        } finally {
+            httpUrl.disconnect();
+        }
+
+        return file;
     }
 
     /**
@@ -80,16 +106,14 @@ public class FileUtil {
 
         FileItemFactory factory = new DiskFileItemFactory(16, null);
         FileItem item = factory.createItem(file.getName(), "text/plain", true, file.getName());
-        int bytesRead = 0;
+        int bytesRead;
         byte[] buffer = new byte[8192];
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            OutputStream os = item.getOutputStream();
+        try (FileInputStream fis = new FileInputStream(file);
+             OutputStream os = item.getOutputStream()) {
+
             while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
-            os.close();
-            fis.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -130,7 +154,6 @@ public class FileUtil {
      */
     public static MultipartFile getMultipartFile(InputStream inputStream, String fileName) {
         FileItem fileItem = createFileItem(inputStream, fileName);
-
         //CommonsMultipartFile是feign对multipartFile的封装，但是要FileItem类对象
         return new CommonsMultipartFile(fileItem);
     }
@@ -147,36 +170,18 @@ public class FileUtil {
         FileItemFactory factory = new DiskFileItemFactory(16, null);
         String textFieldName = "file";
         FileItem item = factory.createItem(textFieldName, MediaType.MULTIPART_FORM_DATA_VALUE, true, fileName);
-        int bytesRead = 0;
+        int bytesRead;
         byte[] buffer = new byte[8192];
-        OutputStream os = null;
         //使用输出流输出输入流的字节
-        try {
-            os = item.getOutputStream();
+        try (inputStream;
+             OutputStream os = item.getOutputStream()) {
             while ((bytesRead = inputStream.read(buffer, 0, 8192)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
-            inputStream.close();
         } catch (IOException e) {
             log.error("Stream copy exception", e);
             throw new IllegalArgumentException("文件上传失败");
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    log.error("Stream close exception", e);
-                }
-            }
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    log.error("Stream close exception", e);
-                }
-            }
         }
-
         return item;
     }
 

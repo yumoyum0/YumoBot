@@ -9,4 +9,6 @@ package top.yumoyumo.yumobot.service;
  */
 public interface MinioService {
     void upload(String target);
+
+
 }

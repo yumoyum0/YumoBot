@@ -18,4 +18,5 @@ public class VirtualThreadConfig {
     public ExecutorService executorService() {
         return Executors.newVirtualThreadPerTaskExecutor();
     }
+
 }

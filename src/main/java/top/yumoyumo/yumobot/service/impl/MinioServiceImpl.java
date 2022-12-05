@@ -1,17 +1,14 @@
 package top.yumoyumo.yumobot.service.impl;
 
-import top.yumoyumo.yumobot.annotation.VirtualThread;
+import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import top.yumoyumo.yumobot.pojo.ImageBean;
 import top.yumoyumo.yumobot.service.MinioService;
 import top.yumoyumo.yumobot.util.FileUtil;
 import top.yumoyumo.yumobot.util.MinioUtil;
-import com.google.gson.Gson;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -38,4 +35,6 @@ public class MinioServiceImpl implements MinioService {
             });
         });
     }
+
+
 }
