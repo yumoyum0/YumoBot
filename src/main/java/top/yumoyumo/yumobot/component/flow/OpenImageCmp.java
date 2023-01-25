@@ -12,11 +12,10 @@ import top.yumoyumo.yumobot.listener.CloseListener;
  **/
 @LiteflowComponent("openImageCmp")
 public class OpenImageCmp extends NodeIfComponent {
-
     @Override
     public boolean processIf() throws Exception {
         BotContext context = this.getContextBean(BotContext.class);
-        if (!CloseListener.isImage.get(context.getEvent().getSubject().getId())) {
+        if (!CloseListener.sessionStates.get(context.getEvent().getSubject().getId()).equals(CloseListener.IMAGE_ENABLED)) {
             context.getEvent().getSubject().sendMessage("图片功能未开启");
             return false;
         }

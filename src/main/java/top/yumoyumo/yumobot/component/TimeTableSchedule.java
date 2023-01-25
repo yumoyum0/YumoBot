@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,8 +19,7 @@ public class TimeTableSchedule {
 
     @Scheduled(cron = "0 0 1 * * MON-FRI")
     private void TimeTableJob() {
-        Map<String, Object> pram = new HashMap<>();
-        pram.put("id", "yumo");
+        Map<String, Object> pram = Map.of("id", "yumo");
         HttpUtil.get(DISPATCH_URL + "/msg/sendTimeTableMsg", pram);
     }
 }

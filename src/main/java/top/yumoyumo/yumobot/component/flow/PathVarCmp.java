@@ -32,4 +32,5 @@ public class PathVarCmp extends NodeComponent {
             context.getEvent().getSubject().sendMessage(result.getData());
         }
     }
+
 }

@@ -63,28 +63,31 @@ public class ProducerServiceImpl implements ProducerService {
         }.getType());
         int curWeek = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR) - 35;
         int curDayOfWeek = LocalDateTime.now().getDayOfWeek().getValue();
-        for (TimeTableBean timeTableBean : timeTableBeanList) {
-            if (timeTableBean.getWeekarr().contains(curWeek) && curDayOfWeek == timeTableBean.getDay()) {
-                String messageBody = String.format(timetableFormat,
-                        timeTableBean.getName(),
-                        timeTableBean.getLocale(),
-                        TimeTableUtil.getStart(timeTableBean.getSectionstart()),
-                        TimeTableUtil.getEnd(timeTableBean.getSectionend()));
-                long delayTime = Duration.between(LocalTime.now(), TimeTableUtil.getStart(timeTableBean.getSectionstart())).getSeconds() * 1000;
-                // 发送开课前30min的提醒
-                rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, TIMETABLE_ROUTING_KEY, messageBody,
-                        correlationData -> {
-                            correlationData.getMessageProperties().setDelay(Math.toIntExact(delayTime - 1000 * 60 * 30));
-                            return correlationData;
-                        });
-                // 发送开课前15min的提醒
-                rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, TIMETABLE_ROUTING_KEY, messageBody,
-                        correlationData -> {
-                            correlationData.getMessageProperties().setDelay(Math.toIntExact(delayTime - 1000 * 60 * 15));
-                            return correlationData;
-                        });
-                log.info("当前时间：{},发送一条延迟{}毫秒的信息给队列 {}:{}", new Date(), delayTime, TIMETABLE_QUEUE_NAME, messageBody);
-            }
-        }
+
+        timeTableBeanList.stream()
+                .filter(timeTableBean -> timeTableBean.getWeekarr().contains(curWeek) && curDayOfWeek == timeTableBean.getDay())
+                .forEach(timeTableBean -> {
+                    // 发送提醒的代码
+                    String messageBody = String.format(timetableFormat,
+                            timeTableBean.getName(),
+                            timeTableBean.getLocale(),
+                            TimeTableUtil.getStart(timeTableBean.getSectionstart()),
+                            TimeTableUtil.getEnd(timeTableBean.getSectionend()));
+                    long delayTime = Duration.between(LocalTime.now(), TimeTableUtil.getStart(timeTableBean.getSectionstart())).getSeconds() * 1000;
+                    // 发送开课前30min的提醒
+                    rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, TIMETABLE_ROUTING_KEY, messageBody,
+                            correlationData -> {
+                                correlationData.getMessageProperties().setDelay(Math.toIntExact(delayTime - 1000 * 60 * 30));
+                                return correlationData;
+                            });
+                    // 发送开课前15min的提醒
+                    rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, TIMETABLE_ROUTING_KEY, messageBody,
+                            correlationData -> {
+                                correlationData.getMessageProperties().setDelay(Math.toIntExact(delayTime - 1000 * 60 * 15));
+                                return correlationData;
+                            });
+                    log.info("当前时间：{},发送一条延迟{}毫秒的信息给队列 {}:{}", new Date(), delayTime, TIMETABLE_QUEUE_NAME, messageBody);
+                });
     }
+
 }

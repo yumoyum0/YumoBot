@@ -26,7 +26,7 @@ public class ChatController {
 
     @RequestMapping()
     @VirtualThread("闲聊")
-    public Future<Result> chat(ChatBean chatBean) {
-        return new AsyncResult<>(Result.success(chatService.chat(chatBean)));
+    public Future<Result> chat(String content, Integer type, Long from, String fromName, Long to, String toName) {
+        return new AsyncResult<>(Result.success(chatService.chat(content, type, from, fromName, to, toName)));
     }
 }

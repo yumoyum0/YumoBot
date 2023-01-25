@@ -24,6 +24,7 @@ public class YumoBotApplication extends SpringBootServletInitializer {
         return new RestTemplate();
     }
 
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(YumoBotApplication.class);

@@ -8,5 +8,5 @@ import top.yumoyumo.yumobot.pojo.ChatBean;
  * @DateTime: 2022/11/3 14:35
  **/
 public interface ChatService {
-    String chat(ChatBean chatBean);
+    String chat(String content, Integer type, Long from, String fromName, Long to, String toName);
 }

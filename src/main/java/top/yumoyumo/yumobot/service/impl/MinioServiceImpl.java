@@ -34,6 +34,7 @@ public class MinioServiceImpl implements MinioService {
                 minioUtil.upload(FileUtil.urlToMultipartFile(dataDTO.getUrls().getOriginal(), filename), r18 ? "r18" : "images");
             });
         });
+
     }
 
 

@@ -1,6 +1,5 @@
 package top.yumoyumo.yumobot.aop;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -8,14 +7,16 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.exception.LocalRuntimeException;
 import top.yumoyumo.yumobot.pojo.TraceLog;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -59,16 +60,17 @@ public class VirtualThreadAspect {
             Object result = null;
             try {
                 result = proceedingJoinPoint.proceed();
-                if (result instanceof Future) {
-                    result = ((Future<?>) result).get();
+                if (result instanceof Future<?> future) {
+                    result = future.get();
                 }
+
                 Object finalResult = result;
                 executorService.submit(() -> {
                     Map<String, Object> param = new HashMap<>();
                     Object[] paramValues = proceedingJoinPoint.getArgs();
                     String[] paramNames = ((CodeSignature) proceedingJoinPoint.getSignature()).getParameterNames();
                     for (int i = 0; i < paramNames.length; i++) {
-                        if (EXCLUDE_SET != null && EXCLUDE_SET.contains(paramNames[i])) {
+                        if (EXCLUDE_SET.contains(paramNames[i])) {
                             continue;
                         }
                         param.put(paramNames[i], paramValues[i]);
@@ -79,7 +81,6 @@ public class VirtualThreadAspect {
                             finalResult);
                     logg.info(traceLog.toLogFormat(true));
                 });
-
             } catch (Throwable e) {
                 e.printStackTrace();
                 throw new LocalRuntimeException(e);
@@ -88,5 +89,6 @@ public class VirtualThreadAspect {
             return result;
         });
     }
+
 
 }

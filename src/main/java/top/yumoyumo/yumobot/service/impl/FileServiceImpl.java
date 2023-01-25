@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Author: yumo
@@ -25,15 +27,19 @@ public class FileServiceImpl implements FileService {
     public void download(HttpServletResponse response, String zipName, List<URLNameBean.DetailDTO> details) {
         List<File> files = new ArrayList<>();
         try {
-            for (URLNameBean.DetailDTO detail : details) {
-                String name = detail.getName();
-                for (String url : detail.getUrls()) {
-                    if (url.contains("sukang")) files.add(FileUtil.urlToFile(url, name + "_苏康码.png"));
-                    else if (url.contains("xingcheng")) files.add(FileUtil.urlToFile(url, name + "_行程码.png"));
-                    else if (url.contains("vaccine")) files.add(FileUtil.urlToFile(url, name + "_疫苗.png"));
-                }
-            }
             CompressDownloadUtil.setDownloadResponse(response, zipName + ".zip");
+            files = details.stream()
+                    .flatMap(detail -> detail.getUrls().stream()
+                            .map(url -> {
+                                String name = detail.getName();
+                                if (url.contains("sukang")) return FileUtil.urlToFile(url, name + "_苏康码.png");
+                                else if (url.contains("xingcheng"))
+                                    return FileUtil.urlToFile(url, name + "_行程码.png");
+                                else if (url.contains("vaccine")) return FileUtil.urlToFile(url, name + "_疫苗.png");
+                                return null;
+                            }))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
             CompressDownloadUtil.compressZip(files, response.getOutputStream());
         } catch (IOException e) {
             throw new LocalRuntimeException(e);

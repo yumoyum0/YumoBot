@@ -4,12 +4,11 @@ import cn.hutool.http.HttpUtil;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.pojo.CityBean;
 import top.yumoyumo.yumobot.pojo.NowWeatherBean;
 import top.yumoyumo.yumobot.service.WeatherService;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: yumo
@@ -40,13 +39,10 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Override
     public String nowWeather(String location) {
-        HashMap<String, Object> paramMap = new HashMap<>();
-        paramMap.put("location", location);
-        paramMap.put("key", key);
+        Map<String, Object> paramMap = Map.of("location", location, "key", key);
         CityBean city = new Gson().fromJson(HttpUtil.get(CITY_URL, paramMap), CityBean.class);
         paramMap.put("location", city.getLocation().get(0).getId());
-        String res = HttpUtil.get(WEATHER_URL, paramMap);
-        NowWeatherBean.NowDTO now = new Gson().fromJson(res, NowWeatherBean.class).getNow();
+        NowWeatherBean.NowDTO now = new Gson().fromJson(HttpUtil.get(WEATHER_URL, paramMap), NowWeatherBean.class).getNow();
         return String.format(weatherFormat,
                 now.getObsTime(),
                 now.getTemp(),

@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 @Configuration
 public class VirtualThreadConfig {
 
-    @Bean("executorService")
+    @Bean()
     public ExecutorService executorService() {
         return Executors.newVirtualThreadPerTaskExecutor();
     }

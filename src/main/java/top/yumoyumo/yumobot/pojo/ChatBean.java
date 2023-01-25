@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatBean {
     private String content;
-    private String type;
-    private String from;
+    private Integer type;
+    private Long from;
     private String fromName;
-    private String to;
+    private Long to;
     private String toName;
 }

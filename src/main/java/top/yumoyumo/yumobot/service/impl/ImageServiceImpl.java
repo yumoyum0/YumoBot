@@ -42,9 +42,7 @@ public class ImageServiceImpl implements ImageService {
         paramMap.put("tag", tag);
         paramMap.put("r18", r18);
         String res = HttpUtil.get(IMAGE_URL, paramMap);
-        executorService.submit(() -> {
-            minioService.upload(res);
-        });
+        executorService.submit(() -> minioService.upload(res));
         return res;
     }
 

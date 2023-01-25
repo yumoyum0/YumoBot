@@ -13,9 +13,6 @@ import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.*;
 import org.jetbrains.annotations.NotNull;
-import top.yumoyumo.yumobot.util.SpringUtil;
-
-import java.util.concurrent.ExecutorService;
 
 /**
  * @Author: yumo
@@ -28,6 +25,7 @@ public class MemberListener extends SimpleListenerHost {
     @Override
     public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
         log.error(exception.getMessage());
+        exception.printStackTrace();
     }
 
     /**
