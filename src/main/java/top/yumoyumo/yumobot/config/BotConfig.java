@@ -9,7 +9,6 @@ import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import top.yumoyumo.yumobot.listener.ChatListener;
 import top.yumoyumo.yumobot.listener.CloseListener;
 import top.yumoyumo.yumobot.listener.DispatcherListener;
@@ -52,7 +51,7 @@ public class BotConfig {
             {
                 //保存设备信息到文件deviceInfo.json文件里相当于是个设备认证信息
                 fileBasedDeviceInfo(deviceInfo);
-                setProtocol(MiraiProtocol.ANDROID_PAD); // 切换协议
+                setProtocol(MiraiProtocol.ANDROID_PHONE); // 切换协议
                 setHeartbeatStrategy(HeartbeatStrategy.STAT_HB); // 切换心跳策略
                 redirectBotLogToDirectory();
             }
