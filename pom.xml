@@ -17,6 +17,9 @@
         <youlai.version>2.0.0</youlai.version>
         <!-- 覆盖SpringBoot中okhttp3的旧版本声明，解决MinIO 8.4.x的依赖冲突 -->
         <okhttp3.version>4.8.1</okhttp3.version>
+        <mirai.version>2.13.2</mirai.version>
+        <minio.version>8.4.3</minio.version>
+        <hutool.version>5.8.10</hutool.version>
     </properties>
 
 
@@ -29,7 +32,7 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.4.3</version>
+            <version>${minio.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -69,7 +72,7 @@
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-core-jvm</artifactId>
-            <version>2.14.0</version>
+            <version>${mirai.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -78,7 +81,7 @@
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-core-api-jvm</artifactId>
-            <version>2.14.0</version>
+            <version>${mirai.version}</version>
             <scope>compile</scope>
         </dependency>
         <!--Hibernate Validator参数校验-->
@@ -177,7 +180,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.10</version>
+            <version>${hutool.version}</version>
         </dependency>
 
         <dependency>
