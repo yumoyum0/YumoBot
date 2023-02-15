@@ -15,16 +15,25 @@ import java.util.List;
 @Data
 public class TimeTableBean {
 
+
     @JsonProperty("day")
     private Integer day;
     @JsonProperty("name")
     private String name;
-    @JsonProperty("weekarr")
-    private List<Integer> weekarr;
-    @JsonProperty("sectionstart")
-    private Integer sectionstart;
-    @JsonProperty("sectionend")
-    private Integer sectionend;
+    @JsonProperty("week")
+    private String week;
+    @JsonProperty("weekStart")
+    private Integer weekStart;
+    @JsonProperty("weekEnd")
+    private Integer weekEnd;
+    @JsonProperty("weekArray")
+    private List<Integer> weekArray;
+    @JsonProperty("sectionStart")
+    private Integer sectionStart;
+    @JsonProperty("sectionEnd")
+    private Integer sectionEnd;
+    @JsonProperty("teacher")
+    private String teacher;
     @JsonProperty("locale")
     private String locale;
 }

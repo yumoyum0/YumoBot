@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import top.yumoyumo.yumobot.constants.RedisKeyConst;
 import top.yumoyumo.yumobot.pojo.TimeTableBean;
 import top.yumoyumo.yumobot.service.RedisService;
 import top.yumoyumo.yumobot.service.TimeTableService;
@@ -16,8 +17,6 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
-
-import static top.yumoyumo.yumobot.service.impl.ProducerServiceImpl.TIMETABLE;
 
 
 /**
@@ -42,12 +41,11 @@ public class TimeTableServiceImpl implements TimeTableService {
                     起始：%s-%s
                     -----------------
                     """;
-    ;
 
     @Override
     public String getTimeTableByDay(LocalDateTime localDateTime) {
         Calendar calendar = new Calendar.Builder().setDate(localDateTime.getYear(), localDateTime.getMonth().getValue(), localDateTime.getDayOfMonth()).build();
-        String s = redisService.get(TIMETABLE + timeTableId);
+        String s = redisService.getString(RedisKeyConst.getTimeTableKey(timeTableId));
         List<TimeTableBean> timeTableBeanList = new Gson().fromJson(s, new TypeToken<List<TimeTableBean>>() {
         }.getType());
         StringBuilder builder = new StringBuilder();
@@ -57,13 +55,13 @@ public class TimeTableServiceImpl implements TimeTableService {
                         -----------------
                         """);
         if (!timeTableBeanList.isEmpty())
-            timeTableBeanList.sort(Comparator.comparingInt(TimeTableBean::getSectionstart));
+            timeTableBeanList.sort(Comparator.comparingInt(TimeTableBean::getSectionStart));
         for (TimeTableBean timeTableBean : timeTableBeanList) {
-            if (timeTableBean.getWeekarr().contains(calendar.get(Calendar.WEEK_OF_YEAR) - 35) && localDateTime.getDayOfWeek().getValue() == timeTableBean.getDay()) {
+            if (timeTableBean.getWeekArray().contains(calendar.get(Calendar.WEEK_OF_YEAR) - 35) && localDateTime.getDayOfWeek().getValue() == timeTableBean.getDay()) {
                 builder.append(String.format(timetableFormat,
                         timeTableBean.getName(),
                         timeTableBean.getLocale(),
-                        TimeTableUtil.getStart(timeTableBean.getSectionstart()), TimeTableUtil.getEnd(timeTableBean.getSectionend())));
+                        TimeTableUtil.getStart(timeTableBean.getSectionStart()), TimeTableUtil.getEnd(timeTableBean.getSectionEnd())));
             }
         }
         return builder.toString().equals("") ?

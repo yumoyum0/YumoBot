@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import top.yumoyumo.yumobot.constants.RedisKeyConst;
 import top.yumoyumo.yumobot.pojo.TimeTableBean;
 import top.yumoyumo.yumobot.service.ProducerService;
 import top.yumoyumo.yumobot.service.RedisService;
@@ -58,22 +59,24 @@ public class ProducerServiceImpl implements ProducerService {
 
     @Override
     public void sendTimeTableMsgFromRedis(String id) {
-        String s = redisService.get(TIMETABLE + id);
+        String s = redisService.getString(RedisKeyConst.getTimeTableKey(id));
         List<TimeTableBean> timeTableBeanList = new Gson().fromJson(s, new TypeToken<List<TimeTableBean>>() {
         }.getType());
-        int curWeek = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR) - 35;
+        if (timeTableBeanList == null) return;
+        int week = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+        int curWeek = week > 35 ? week - 35 : week - 6;
         int curDayOfWeek = LocalDateTime.now().getDayOfWeek().getValue();
 
         timeTableBeanList.stream()
-                .filter(timeTableBean -> timeTableBean.getWeekarr().contains(curWeek) && curDayOfWeek == timeTableBean.getDay())
+                .filter(timeTableBean -> timeTableBean.getWeekArray().contains(curWeek) && curDayOfWeek == timeTableBean.getDay())
                 .forEach(timeTableBean -> {
                     // 发送提醒的代码
                     String messageBody = String.format(timetableFormat,
                             timeTableBean.getName(),
                             timeTableBean.getLocale(),
-                            TimeTableUtil.getStart(timeTableBean.getSectionstart()),
-                            TimeTableUtil.getEnd(timeTableBean.getSectionend()));
-                    long delayTime = Duration.between(LocalTime.now(), TimeTableUtil.getStart(timeTableBean.getSectionstart())).getSeconds() * 1000;
+                            TimeTableUtil.getStart(timeTableBean.getSectionStart()),
+                            TimeTableUtil.getEnd(timeTableBean.getSectionEnd()));
+                    long delayTime = Duration.between(LocalTime.now(), TimeTableUtil.getStart(timeTableBean.getSectionStart())).getSeconds() * 1000;
                     // 发送开课前30min的提醒
                     rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, TIMETABLE_ROUTING_KEY, messageBody,
                             correlationData -> {
