@@ -35,11 +35,12 @@
 
 - 课表查询
 - 天气查询
+- 主动消息生产
 - . . . . . .
 
 # 搭建
 
-要运行本项目请先配置好以下依赖
+要运行本项目请先配置好以下部分
 
 - IDEA
 - Openjdk19
@@ -47,14 +48,27 @@
 - Redis
 - Minio
 - RabbitMQ
+- 
 
 ## JDK19配置
 
-看我博客： [羽墨的个人博客 (yumoyumo.top)](https://www.yumoyumo.top/baby-virtualthread/)
+看我博客： [羽墨的个人博客 (yumoyumo.top)](https://www.yumoyumo.top/885.html)
 
 ## 软件配置
 
-然后clone本仓库或者下载仓库代码，并用IDEA打开。在`src/main/resources`目录下创建`application-dev.yml`文件，并写入以下信息
+然后clone本仓库或者下载仓库代码，并用IDEA打开。
+
+在`src/main/resources`目录下创建`application.properties`文件，并写入以下信息
+
+```yml
+spring.profiles.active=dev
+spring.application.name=yumobot
+server.port=8088
+liteflow.rule-source=liteflow/*.el.xml
+liteflow.thread-executor-class=top.yumoyumo.yumobot.config.CustomThreadBuilder
+```
+本地运行：
+在`src/main/resources`目录下创建`application-dev.yml`文件，并写入以下信息
 
 ```yml
 spring:
@@ -98,26 +112,32 @@ minio:
   accessKey: username
   secretKey: password
   bucketName: images
-```
+bot:
+  account: 123456
+  pwd: 123456
+  version: 123456
+  mode: 123456
 
-然后再在`src/main/resources`目录下创建`yumobot.properties`文件
+master:
+  id: 123456
 
-并填入你自己的内容
+timetable:
+  id: 123456
 
+weather:
+  key: 123456
+
+translation:
+  appid: 123456
+  salt: 123456
+  secret: 123456
+
+chat:
+  api_key: 123456
+  api_secret: 123456
 ```
-bot.account=123456
-bot.pwd=123456
-bot.version=@1.0
-bot.mode=Killer
-master.id=123456
-timetable.id=123456
-weather.key=123456
-translation.appid=123456
-translation.salt=123456
-translation.secret=123456
-chat.api_key=123456
-chat.api_secret=123456
-```
+生产环境运行：
+在`src/main/resources`目录下创建`application-prod.yml`文件，内容同`application-dev.yml`文件，只是把相应的value改成生产环境的即可
 
 完成之后即可运行查看效果。
 
@@ -125,7 +145,7 @@ chat.api_secret=123456
 
 因为dockerHub上没有jdk19的镜像，所以需要自己手动构建
 
-详情看我博客： [羽墨的个人博客 (yumoyumo.top)](https://www.yumoyumo.top/docker构建jdk19镜像部署qqbot项目/)
+详情看我博客： [羽墨的个人博客 (yumoyumo.top)](https://www.yumoyumo.top/885.html)
 
 # 鸣谢
 
