@@ -8,7 +8,7 @@ import top.yumoyumo.yumobot.pojo.CityBean;
 import top.yumoyumo.yumobot.pojo.NowWeatherBean;
 import top.yumoyumo.yumobot.service.WeatherService;
 
-import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @Author: yumo
@@ -39,9 +39,11 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Override
     public String nowWeather(String location) {
-        Map<String, Object> paramMap = Map.of("location", location, "key", key);
+        HashMap<String, Object> paramMap = new HashMap<>();
+        paramMap.put("key", key);
+        paramMap.put("location", location);
         CityBean city = new Gson().fromJson(HttpUtil.get(CITY_URL, paramMap), CityBean.class);
-        paramMap.put("location", city.getLocation().get(0).getId());
+        paramMap.replace("location", city.getLocation().get(0).getId());
         NowWeatherBean.NowDTO now = new Gson().fromJson(HttpUtil.get(WEATHER_URL, paramMap), NowWeatherBean.class).getNow();
         return String.format(weatherFormat,
                 now.getObsTime(),
