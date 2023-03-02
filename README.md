@@ -1,6 +1,8 @@
 # YumoBot
-[![OSCS Status](https://www.oscs1024.com/platform/badge/YumoBot.svg?size=large)](https://www.murphysec.com/)
 [![OSCS Status](https://www.oscs1024.com/platform/badge/YumoBot.svg?size=small)](https://www.murphysec.com/)
+
+[![OSCS Status](https://www.oscs1024.com/platform/badge/YumoBot.svg?size=large)](https://www.murphysec.com/)
+
 
 一个基于 **mirai** 的qqbot
 
