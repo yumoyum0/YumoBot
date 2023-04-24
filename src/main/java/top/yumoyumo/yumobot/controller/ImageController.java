@@ -1,7 +1,6 @@
 package top.yumoyumo.yumobot.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,7 +11,6 @@ import top.yumoyumo.yumobot.service.ImageService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.util.concurrent.Future;
 
 /**
  * The type Image controller.
@@ -31,8 +29,8 @@ public class ImageController {
 
     @RequestMapping("/help")
     @VirtualThread("图片help")
-    public Future<Result> help() {
-        return new AsyncResult<>(Result.success(
+    public Result help() {
+        return Result.success(
                 """
                         图片help:
                         --------------------
@@ -40,17 +38,16 @@ public class ImageController {
                         例:
                         /图片 10
                         /图片 10 原神
-                        """)
-        );
+                        """);
     }
 
     @RequestMapping(value = {"", "/"})
     @VirtualThread("获取图片")
-    public Future<Result> getImage(@RequestParam(required = false) String tag,
-                                   @RequestParam(required = false) String num,
-                                   @RequestParam(required = false) String r18) {
+    public Result getImage(@RequestParam(required = false) String tag,
+                           @RequestParam(required = false) String num,
+                           @RequestParam(required = false) String r18) {
 
-        return new AsyncResult<>(Result.success(imageService.getImage(tag, num, r18)));
+        return Result.success(imageService.getImage(tag, num, r18));
     }
 
     @GetMapping("/download")

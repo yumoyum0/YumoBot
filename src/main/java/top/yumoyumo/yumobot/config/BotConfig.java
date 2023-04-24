@@ -13,6 +13,7 @@ import top.yumoyumo.yumobot.listener.ChatListener;
 import top.yumoyumo.yumobot.listener.CloseListener;
 import top.yumoyumo.yumobot.listener.DispatcherListener;
 import top.yumoyumo.yumobot.listener.MemberListener;
+import xyz.cssxsh.mirai.tool.FixProtocolVersion;
 
 
 /**
@@ -47,6 +48,7 @@ public class BotConfig {
             System.err.println("*****未配置账号或密码*****");
             log.warn("*****未配置账号或密码*****");
         }
+        FixProtocolVersion.update();
         Bot bot = BotFactory.INSTANCE.newBot(account, pwd, new BotConfiguration() {
             {
                 //保存设备信息到文件deviceInfo.json文件里相当于是个设备认证信息
@@ -56,6 +58,7 @@ public class BotConfig {
                 redirectBotLogToDirectory();
             }
         });
+        log.info(FixProtocolVersion.info().toString());
         bot.login();
         EventChannel<BotEvent> eventChannel = bot.getEventChannel();
         eventChannel.registerListenerHost(new ChatListener());
