@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @Author: yumo
@@ -23,6 +25,10 @@ public class MqConfig {
     public static final String CUSTOM_ROUTING_KEY = "custom.routingkey";
     public static final String TIMETABLE_QUEUE_NAME = "timetable.queue";
     public static final String TIMETABLE_ROUTING_KEY = "timetable.routingkey";
+
+    @Resource
+    private ExecutorService executorService;
+
 
     /**
      * 声明延迟交换机

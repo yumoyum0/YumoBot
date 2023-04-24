@@ -1,16 +1,13 @@
 package top.yumoyumo.yumobot.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.common.Result;
-import top.yumoyumo.yumobot.pojo.ChatBean;
 import top.yumoyumo.yumobot.service.ChatService;
 
 import javax.annotation.Resource;
-import java.util.concurrent.Future;
 
 /**
  * @Author: yumo
@@ -26,7 +23,7 @@ public class ChatController {
 
     @RequestMapping()
     @VirtualThread("闲聊")
-    public Future<Result> chat(String content, Integer type, Long from, String fromName, Long to, String toName) {
-        return new AsyncResult<>(Result.success(chatService.chat(content, type, from, fromName, to, toName)));
+    public Result chat(String content, Integer type, Long from, String fromName, Long to, String toName) {
+        return Result.success(chatService.chat(content, type, from, fromName, to, toName));
     }
 }

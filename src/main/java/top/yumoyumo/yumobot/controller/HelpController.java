@@ -2,13 +2,10 @@ package top.yumoyumo.yumobot.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.common.Result;
-
-import java.util.concurrent.Future;
 
 /**
  * @Author: yumo
@@ -22,8 +19,8 @@ public class HelpController {
 
     @VirtualThread("help")
     @RequestMapping(value = {"", "/", "/help"})
-    public Future<Result> help() {
-        return new AsyncResult<>(Result.success(
+    public Result help() {
+        return Result.success(
                 """
                         YumoBot
                         --------------------
@@ -34,8 +31,7 @@ public class HelpController {
                         4. /一言\t一言
                         5. 闲聊模式：关闭:<雪豹闭嘴>;开启<雪豹张嘴>
                         6. /图片\t获取图片
-                        """)
-        );
+                        """);
     }
 
 

@@ -1,7 +1,6 @@
 package top.yumoyumo.yumobot.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +9,6 @@ import top.yumoyumo.yumobot.common.Result;
 import top.yumoyumo.yumobot.service.WeatherService;
 
 import javax.annotation.Resource;
-import java.util.concurrent.Future;
 
 /**
  * @Author: yumo
@@ -26,8 +24,8 @@ public class WeatherController {
 
     @RequestMapping(value = {"", "/", "/help"})
     @VirtualThread("天气查询help")
-    public Future<Result> help() {
-        return new AsyncResult<>(Result.success(
+    public Result help() {
+        return Result.success(
                 """
                         实时天气查询help:
                         --------------------
@@ -36,12 +34,12 @@ public class WeatherController {
                         /天气/南京
                         /天气/118.76741,32.04154
                         /天气/101190101"""
-        ));
+        );
     }
 
     @RequestMapping("/{location}")
     @VirtualThread("实时天气查询")
-    public Future<Result> nowWeather(@PathVariable String location) {
-        return new AsyncResult<>(Result.success(weatherService.nowWeather(location)));
+    public Result nowWeather(@PathVariable String location) {
+        return Result.success(weatherService.nowWeather(location));
     }
 }

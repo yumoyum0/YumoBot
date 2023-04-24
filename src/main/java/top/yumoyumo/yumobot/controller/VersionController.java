@@ -1,13 +1,10 @@
 package top.yumoyumo.yumobot.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yumoyumo.yumobot.annotation.VirtualThread;
 import top.yumoyumo.yumobot.common.Result;
-
-import java.util.concurrent.Future;
 
 /**
  * The type Log controller.
@@ -29,8 +26,8 @@ public class VersionController {
      */
     @RequestMapping()
     @VirtualThread("版本help")
-    public Future<Result> log() {
-        return new AsyncResult<>(Result.success(
+    public Result log() {
+        return Result.success(
                 """
                         @1.0 ： 2022.9.8
                         - YumoBot正式立项
@@ -56,6 +53,6 @@ public class VersionController {
                         - 新增图片接口
                         - 新增自动构建图库
                         """
-        ));
+        );
     }
 }

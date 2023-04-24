@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 /**
  * The type Virtual thread aspect.
@@ -55,39 +55,35 @@ public class VirtualThreadAspect {
      * @param proceedingJoinPoint 执行连接点
      */
     @Around("start()&&@annotation(virtualThread)")
-    public Future<Object> virtualThread(ProceedingJoinPoint proceedingJoinPoint, VirtualThread virtualThread) {
-        return executorService.submit(() -> {
-            Object result = null;
-            try {
-                result = proceedingJoinPoint.proceed();
-                if (result instanceof Future<?> future) {
-                    result = future.get();
-                }
-
-                Object finalResult = result;
-                executorService.submit(() -> {
+    public Object virtualThread(ProceedingJoinPoint proceedingJoinPoint, VirtualThread virtualThread) {
+        CompletableFuture<String> paramFuture = CompletableFuture.supplyAsync(() -> {
                     Map<String, Object> param = new HashMap<>();
                     Object[] paramValues = proceedingJoinPoint.getArgs();
                     String[] paramNames = ((CodeSignature) proceedingJoinPoint.getSignature()).getParameterNames();
                     for (int i = 0; i < paramNames.length; i++) {
-                        if (EXCLUDE_SET.contains(paramNames[i])) {
-                            continue;
+                        if (!EXCLUDE_SET.contains(paramNames[i])) {
+                            param.put(paramNames[i], paramValues[i]);
                         }
-                        param.put(paramNames[i], paramValues[i]);
                     }
-                    TraceLog traceLog = new TraceLog(virtualThread.value(),
-                            String.valueOf(proceedingJoinPoint.getSignature()),
-                            param,
-                            finalResult);
-                    logg.info(traceLog.toLogFormat(true));
-                });
-            } catch (Throwable e) {
-                e.printStackTrace();
-                throw new LocalRuntimeException(e);
-            }
-
-            return result;
-        });
+                    return String.valueOf(param);
+                }
+                , executorService);
+        CompletableFuture<Object> resultFuture = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        return proceedingJoinPoint.proceed();
+                    } catch (Throwable e) {
+                        throw new LocalRuntimeException(e);
+                    }
+                }
+                , executorService);
+        CompletableFuture.allOf(paramFuture, resultFuture).thenAcceptAsync((res) -> {
+            TraceLog traceLog = new TraceLog(virtualThread.value(),
+                    String.valueOf(proceedingJoinPoint.getSignature()),
+                    paramFuture.join(),
+                    resultFuture.join());
+            logg.info(traceLog.toLogFormat(true));
+        }, executorService);
+        return resultFuture.join();
     }
 
 
