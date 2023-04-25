@@ -13,7 +13,7 @@ import top.yumoyumo.yumobot.listener.ChatListener;
 import top.yumoyumo.yumobot.listener.CloseListener;
 import top.yumoyumo.yumobot.listener.DispatcherListener;
 import top.yumoyumo.yumobot.listener.MemberListener;
-import xyz.cssxsh.mirai.tool.FixProtocolVersion;
+import top.yumoyumo.yumobot.mirai.tool.FixProtocolVersion;
 
 
 /**
