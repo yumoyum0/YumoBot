@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TimeZone;
 
 
 /**
@@ -44,7 +45,7 @@ public class TimeTableServiceImpl implements TimeTableService {
 
     @Override
     public String getTimeTableByDay(LocalDateTime localDateTime) {
-        Calendar calendar = new Calendar.Builder().setDate(localDateTime.getYear(), localDateTime.getMonth().getValue(), localDateTime.getDayOfMonth()).build();
+        Calendar calendar = new Calendar.Builder().setDate(localDateTime.getYear(), localDateTime.getMonth().getValue(), localDateTime.getDayOfMonth()).setTimeZone(TimeZone.getTimeZone("GMT+8")).build();
         String s = redisService.getString(RedisKeyConst.getTimeTableKey(timeTableId));
         List<TimeTableBean> timeTableBeanList = new Gson().fromJson(s, new TypeToken<List<TimeTableBean>>() {
         }.getType());
@@ -56,8 +57,9 @@ public class TimeTableServiceImpl implements TimeTableService {
                         """);
         if (!timeTableBeanList.isEmpty())
             timeTableBeanList.sort(Comparator.comparingInt(TimeTableBean::getSectionStart));
+        int week = calendar.get(Calendar.WEEK_OF_YEAR);
         for (TimeTableBean timeTableBean : timeTableBeanList) {
-            if (timeTableBean.getWeekArray().contains(calendar.get(Calendar.WEEK_OF_YEAR) - 35) && localDateTime.getDayOfWeek().getValue() == timeTableBean.getDay()) {
+            if (timeTableBean.getWeekArray().contains(week > 35 ? week - 35 : week - 10) && localDateTime.getDayOfWeek().getValue() == timeTableBean.getDay()) {
                 builder.append(String.format(timetableFormat,
                         timeTableBean.getName(),
                         timeTableBean.getLocale(),

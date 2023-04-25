@@ -56,14 +56,14 @@ public class MemberListener extends SimpleListenerHost {
         return ListeningStatus.LISTENING;
     }
 
-    /**
-     * 戳一戳监听
-     */
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onNudgeMessage(@NotNull NudgeEvent event) {
-        if (!event.getFrom().getNick().equals("YumoBot"))
-            event.getTarget().nudge().sendTo(event.getSubject());
-    }
+//    /**
+//     * 戳一戳监听
+//     */
+//    @EventHandler(priority = EventPriority.NORMAL)
+//    public void onNudgeMessage(@NotNull NudgeEvent event) {
+//        if (!event.getFrom().getNick().equals("YumoBot"))
+//            event.getTarget().nudge().sendTo(event.getSubject());
+//    }
 
     /**
      * 闪照监听
