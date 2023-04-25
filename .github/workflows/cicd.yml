@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -19,7 +17,7 @@ jobs:
         uses: oracle-actions/setup-java@v1
         with:
           website: oracle.com
-          release: 19
+          release: 20
       - name: Build with Maven
         run: mvn -B package --file pom.xml
       - name: Rename target

@@ -19,7 +19,8 @@
         <okhttp3.version>4.8.1</okhttp3.version>
         <mirai.version>2.14.0</mirai.version>
         <minio.version>8.4.3</minio.version>
-        <hutool.version>5.8.10</hutool.version>
+        <hutool.version>5.8.18</hutool.version>
+        <liteflow.version>2.10.2</liteflow.version>
     </properties>
 
 
@@ -74,6 +75,12 @@
             <artifactId>mirai-core-jvm</artifactId>
             <version>${mirai.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.mamoe</groupId>
+            <artifactId>mirai-console</artifactId>
+            <version>${mirai.version}</version>
         </dependency>
 
 
@@ -196,7 +203,7 @@
         <dependency>
             <groupId>com.yomahub</groupId>
             <artifactId>liteflow-spring-boot-starter</artifactId>
-            <version>2.9.4</version>
+            <version>${liteflow.version}</version>
         </dependency>
 
     </dependencies>
